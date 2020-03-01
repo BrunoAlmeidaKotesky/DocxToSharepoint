@@ -5,10 +5,8 @@ import Docxtemplater from 'docxtemplater';
 let  InspectModule = require('docxtemplater/js/inspect-module');
 import {useState} from 'react';
 import {ITemplateField, useTempGen, FieldTypess} from './interfaces/ITemplate';
-import { FieldTypes, IFields } from "@pnp/sp/fields";
 
 let iModule = InspectModule();
-const tagRegex = /{[a-zA-Z0-9]+}$/g;
 
 export function useTemplateGen():useTempGen {
     const  [templates, setTemplate] = useState<ITemplateField[]>([]);
@@ -40,7 +38,7 @@ export function useTemplateGen():useTempGen {
            return fieldObj;
        }
         else {
-             fieldObj = {field: field.substring(1), fieldType: FieldTypess.FSingleLine};
+             fieldObj = {field: field, fieldType: FieldTypess.FSingleLine};
             return fieldObj;
         }
     }
@@ -72,5 +70,5 @@ export function useTemplateGen():useTempGen {
         reader.readAsBinaryString(file);
     };
 
-    return [templates, handleFile];
+    return [templates, setTemplate,handleFile];
 }
