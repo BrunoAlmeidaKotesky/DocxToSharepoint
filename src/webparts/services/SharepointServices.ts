@@ -2,8 +2,8 @@ import { ITemplateField, FieldTypess } from './../docxjs/models/interfaces/ITemp
 import { sp } from "@pnp/sp";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
-import "@pnp/sp/fields"; import { IField, DateTimeFieldFormatType, CalendarType, DateTimeFieldFriendlyFormatType } from "@pnp/sp/fields/types";
-import { IFieldAddResult } from "@pnp/sp/fields";
+import "@pnp/sp/fields"; 
+import { IField, DateTimeFieldFormatType, CalendarType, DateTimeFieldFriendlyFormatType } from "@pnp/sp/fields/types";
 
 export async function createList(listName: string) {
     const listAddResult = await sp.web.lists.add(listName);
@@ -12,54 +12,59 @@ export async function createList(listName: string) {
     const listInfo = await listAddResult.list.select(listName)();
 }
 
-export async function addFields(listName: string, fields: ITemplateField[]) {
-    const results = fields.map(async (f) => {
-         await handleFileType(f, listName);
-    });
-    Promise.all(results);
-    return results;
-}
-
-async function handleFileType(f: ITemplateField, listName: string) {
-    let field: IFieldAddResult;
+export async function addFields(listName: string, field: ITemplateField[]) {
+    console.log('ex');
     let batch = sp.web.createBatch();
-    if (f.fieldType === FieldTypess.FSingleLine) {
-         field = await sp.web.lists.getByTitle(listName).fields.addText(f.field, 255);
-         await sp.web.lists.getByTitle(listName).fields.getByTitle(f.field).setShowInDisplayForm(true);
-         return field;
-    }
+    sp.web.lists.inBatch(batch).get();
+    let list = await sp.web.lists.getByTitle(listName);
+    
+    let res = field.map(async f =>{
+       
+       if (f.fieldType === FieldTypess.FSingleLine) {
+           
+            await list.fields.addText(f.field, 255);
+            await list.fields.getByTitle(f.field).setShowInDisplayForm(true);
+       }
+   
+       else if (f.fieldType === FieldTypess.FNumeric) {
+           
+           await list.fields.addNumber(f.field);
+           await list.fields.getByTitle(f.field).setShowInDisplayForm(true);
+            
+       }
+   
+       else if (f.fieldType === FieldTypess.FChoice) {
+           
+           await list.fields.addChoice(f.field, f.choice.choices, f.choice.type);
+           await list.fields.getByTitle(f.field).setShowInDisplayForm(true);
+            
+       }
+   
+       else if (f.fieldType === FieldTypess.FMonetary) {//1046 = R$ BRL
+           
+           await list.fields.addCurrency(f.field, undefined, undefined, 1046);
+           await list.fields.getByTitle(f.field).setShowInDisplayForm(true);
+            
+       }
+   
+       else if (f.fieldType === FieldTypess.FLookUp) {
+           f.lookup.list.forEach(async name => {
+               const listLookUp = await sp.web.lists.getByTitle(name)();
+   
+               await list.fields.addLookup(f.field, listLookUp.Id, f.lookup.field);
+               await list.fields.getByTitle(f.field).setShowInDisplayForm(true);
+                
+           });
+       }
+   
+       else if (f.fieldType === FieldTypess.FData) {
+           
+           await list.fields.addDateTime(f.field, DateTimeFieldFormatType.DateOnly, CalendarType.Gregorian, DateTimeFieldFriendlyFormatType.Disabled);
+           await list.fields.getByTitle(f.field).setShowInDisplayForm(true);
+            
+       }
+   
+    });
 
-    else if (f.fieldType === FieldTypess.FNumeric) {
-         field = await sp.web.lists.getByTitle(listName).fields.addNumber(f.field);
-         await sp.web.lists.getByTitle(listName).fields.getByTitle(f.field).setShowInDisplayForm(true);
-         return field;
-    }
-
-    else if (f.fieldType === FieldTypess.FChoice) {
-         field = await sp.web.lists.getByTitle(listName).fields.addChoice(f.field, f.choice.choices, f.choice.type);
-         await sp.web.lists.getByTitle(listName).fields.getByTitle(f.field).setShowInDisplayForm(true);
-         return field;
-    }
-
-    else if (f.fieldType === FieldTypess.FMonetary) {//1046 = R$ BRL
-         field = await sp.web.lists.getByTitle(listName).fields.addCurrency(f.field, 0, 99999999, 1046);
-         await sp.web.lists.getByTitle(listName).fields.getByTitle(f.field).setShowInDisplayForm(true);
-         return field;
-    }
-
-    else if (f.fieldType === FieldTypess.FLookUp) {
-        f.lookup.list.forEach(async name => {
-            const list = await sp.web.lists.getByTitle(name)();
-
-             field = await sp.web.lists.getByTitle(listName).fields.addLookup(f.field, list.Id, f.lookup.field);
-             await sp.web.lists.getByTitle(listName).fields.getByTitle(f.field).setShowInDisplayForm(true);
-             return field;
-        });
-    }
-
-    else if (f.fieldType === FieldTypess.FData) {
-         field = await sp.web.lists.getByTitle(listName).fields.addDateTime(f.field, DateTimeFieldFormatType.DateOnly, CalendarType.Gregorian, DateTimeFieldFriendlyFormatType.Disabled);
-         await sp.web.lists.getByTitle(listName).fields.getByTitle(f.field).setShowInDisplayForm(true);
-         return field;
-    }
+    batch.execute().then(()=>console.log('Foi')).catch(console.log);
 }

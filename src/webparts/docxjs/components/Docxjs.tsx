@@ -3,7 +3,7 @@ import { IDocxjsProps } from './IDocxjsProps';
 import { useTemplateGen } from '../models/docxGenerator';
 import { FieldTypess, ITemplateField } from '../models/interfaces/ITemplate';
 import { Dropdown, Text, IIconProps, IconButton, IDropdownOption, DefaultButton } from 'office-ui-fabric-react';
-import { createList, addFields } from '../../services/SharepointServices';
+import { createList, addFields} from '../../services/SharepointServices';
 
 export default function Docxjs(props: IDocxjsProps): JSX.Element {
     const [templates, setTemplate, handleFile] = useTemplateGen();
@@ -44,8 +44,7 @@ export default function Docxjs(props: IDocxjsProps): JSX.Element {
     const sendFields = async (listName: string) => {
         try {
             await createList(listName);
-            let res = await addFields(listName, templates);
-            console.log(res);
+            await addFields(listName, templates);
         } catch (e) {
             console.log(e);
         }
@@ -60,6 +59,6 @@ export default function Docxjs(props: IDocxjsProps): JSX.Element {
             </div>
         ) : ''}
 
-        <DefaultButton text="Enviar" onClick={()=>sendFields('createdByWeb')}/>
+        <DefaultButton text="Enviar" onClick={()=>sendFields('batchot')}/>
     </>);
 }

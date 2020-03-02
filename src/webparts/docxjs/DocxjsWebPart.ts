@@ -10,18 +10,26 @@ import {
 import * as strings from 'DocxjsWebPartStrings';
 import Docxjs from './components/Docxjs';
 import { IDocxjsProps } from './components/IDocxjsProps';
+import { PageContext } from '@microsoft/sp-page-context';
+import { sp } from "@pnp/sp";
 
 export interface IDocxjsWebPartProps {
   description: string;
+  pageCtx: PageContext;
 }
 
 export default class DocxjsWebPart extends BaseClientSideWebPart<IDocxjsWebPartProps> {
 
   public render(): void {
+      sp.setup({  
+        spfxContext: this.context
+    });
+
     const element: React.ReactElement<IDocxjsProps > = React.createElement(
       Docxjs,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        pageCtx: this.properties.pageCtx
       }
     );
 
