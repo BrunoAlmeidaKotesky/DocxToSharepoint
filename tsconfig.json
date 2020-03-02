@@ -30,7 +30,7 @@
     ]
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts", "src/webparts/docxjs/models/docxGenerator.tsx"
   ],
   "exclude": [
     "node_modules",
