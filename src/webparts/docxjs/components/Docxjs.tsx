@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { useEffect, useContext } from 'react';
+import {  useContext } from 'react';
 import { IDocxjsProps } from './IDocxjsProps';
 import { useTemplateGen } from '../models/hooks/docxGenerator';
-import { ITemplateField } from '../models/interfaces/ITemplate';
-import { Dropdown, Text, IIconProps, IconButton, IDropdownOption, DefaultButton, IComboBoxOption } from 'office-ui-fabric-react';
-import { stateCtx, dispatchCtx } from './DocxContext';
+import {  DefaultButton, } from 'office-ui-fabric-react';
+import { stateCtx, } from './DocxContext';
 import {TemplateForm} from './TemplateForm';
 
 export default function Docxjs(props: IDocxjsProps): JSX.Element {

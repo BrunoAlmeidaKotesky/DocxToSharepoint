@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {useContext} from 'react';
-import {stateCtx, dispatchCtx} from './DocxContext';
-import { IconButton, IIconProps, IDropdownOption, Text, Dropdown } from 'office-ui-fabric-react';
-import { FieldTypess, ITemplateField } from '../models/interfaces/ITemplate';
+import {stateCtx} from './DocxContext';
+import { IconButton, IIconProps } from 'office-ui-fabric-react';
 import { useTemplateHandle } from '../models/hooks/formHandler';
 
 export function TemplateForm():JSX.Element{
