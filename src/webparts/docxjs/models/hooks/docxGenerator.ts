@@ -1,22 +1,20 @@
-import { IDropdownOption } from 'office-ui-fabric-react';
-
 import * as PizZip from 'pizzip';
 import * as React from 'react';
 import Docxtemplater from 'docxtemplater';
 let  InspectModule = require('docxtemplater/js/inspect-module');
-import {useState, useContext} from 'react';
-import {ITemplateField, FieldTypess} from './interfaces/ITemplate';
-import {stateCtx, dispatchCtx} from '../components/DocxContext';
-import { createList, addFields } from '../services/SharepointServices';
-import { useDocGen } from './types/types';
+import { useContext } from 'react';
+import {ITemplateField, FieldTypess, ITemplateGen} from '../interfaces/ITemplate';
+import {stateCtx, dispatchCtx} from '../../components/DocxContext';
+import { createList, addFields } from '../../services/SharepointServices';
 
 let iModule = InspectModule();
 
-export function useTemplateGen():useDocGen {
+export function useTemplateGen():ITemplateGen {
     //const  [templates, setTemplate] = useState<ITemplateField[]>([]);
 
-    const {templates, isEdit, comboOpt} = useContext(stateCtx);
+    const {templates} = useContext(stateCtx);
     const setState = useContext(dispatchCtx);
+    React.useEffect(() => console.log(templates), [templates]);
 
      function validateFieldType(field:string){
         let fieldObj: ITemplateField;
@@ -79,40 +77,6 @@ export function useTemplateGen():useDocGen {
         reader.readAsBinaryString(file);
     };
 
-    const changeEditForm = (idx: string) => {
-        if (templates.length !== 0 && templates !== undefined) {
-            let actualOpt: IDropdownOption[] = [];
-            templates.forEach(t => {
-                if (t.fieldType === FieldTypess.FSingleLine) {
-                    actualOpt.push({ key: t.fieldType, text: "Texto", selected: true, data: t.field });
-                }
-                if (t.fieldType === FieldTypess.FMonetary) {
-                    actualOpt.push({ key: t.fieldType, text: "Moeda", selected: true, data: t.field });
-                }
-                if (t.fieldType === FieldTypess.FData) {
-                    actualOpt.push({ key: t.fieldType, text: "Data", selected: true, data: t.field });
-                }
-                if (t.fieldType === FieldTypess.FNumeric) {
-                    actualOpt.push({ key: t.fieldType, text: "Num", selected: true, data: t.field });
-                }
-                setState(pState=> ({...pState, comboOpt: actualOpt}));
-            });
-            console.log(templates);
-        }
-        setState(pState=> ({...pState, isEdit: {edit: !isEdit.edit, selectedIdx: idx}}));
-    };
-    const handleCombosChange=(opt:string, event:React.FormEvent<HTMLDivElement>, ddpOpt:IDropdownOption)=> {
-        console.log(opt);
-        console.log(ddpOpt);
-        console.log(event);
-        templates.filter((t)=>{
-            if(t.field === opt)
-             t.fieldType = (ddpOpt.key as FieldTypess);
-        });
-        setState(pState =>({...pState, templates: templates}));
-        
-    };
-    
     const sendFields = async (listName: string) => {
         try {
             await createList(listName);
@@ -122,5 +86,5 @@ export function useTemplateGen():useDocGen {
         }
     };
 
-    return {handleFile, changeEditForm, handleCombosChange, sendFields};
+    return {handleFile , sendFields};
 }

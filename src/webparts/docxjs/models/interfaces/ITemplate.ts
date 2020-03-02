@@ -1,10 +1,20 @@
-import { RDispatch } from './../types/types';
-import { FieldTypes , ChoiceFieldFormatType} from "@pnp/sp/fields";
+import { IDropdownOption } from 'office-ui-fabric-react';
+import { ChoiceFieldFormatType} from "@pnp/sp/fields";
 export interface ITemplateField {
     field: string;
     fieldType: FieldTypess; 
     choice?: {choices: any[], type: ChoiceFieldFormatType};
     lookup?: {list: string[] , field: string};
+}
+
+export interface ITemplateGen {
+    handleFile(e: React.ChangeEvent<HTMLInputElement>): void;
+    sendFields(listName: string): Promise<void>;
+}
+
+export interface ITemplateForm{
+    changeEditForm(idx: string): void;
+    TemplateItems: (edit: boolean, idx: string, fields: ITemplateField) => JSX.Element;
 }
 
 export enum FieldTypess {
