@@ -3,13 +3,17 @@ import * as PizZip from 'pizzip';
 import * as React from 'react';
 import Docxtemplater from 'docxtemplater';
 let  InspectModule = require('docxtemplater/js/inspect-module');
-import {useState} from 'react';
-import {ITemplateField, useTempGen, FieldTypess} from './interfaces/ITemplate';
+import {useState, useContext} from 'react';
+import {ITemplateField, FieldTypess} from './interfaces/ITemplate';
+import {stateCtx, dispatchCtx} from '../components/DocxContext';
 
 let iModule = InspectModule();
 
-export function useTemplateGen():useTempGen {
-    const  [templates, setTemplate] = useState<ITemplateField[]>([]);
+export function useTemplateGen() {
+    //const  [templates, setTemplate] = useState<ITemplateField[]>([]);
+
+    const {templates} = useContext(stateCtx);
+    const setState = useContext(dispatchCtx);
 
      function validateFieldType(field:string){
         let fieldObj: ITemplateField;
@@ -49,7 +53,9 @@ export function useTemplateGen():useTempGen {
         var parsedTags = iModule.getAllTags();
         //let fileTags = String(doc.getFullText()).match(tagRegex);
         let tags = Object.getOwnPropertyNames(parsedTags);
-        let allTags = tags.map(field =>{
+        let uniqueTags = Array.from(new Set([...tags]));
+        
+        let allTags = uniqueTags.map(field =>{
             field = field.replace('{','').replace('}','');
             return validateFieldType(field);
         });
@@ -64,11 +70,11 @@ export function useTemplateGen():useTempGen {
             let zip = new PizZip(reader.result);
             let doc = new Docxtemplater().loadZip(zip);
             let fieldsToSharePoint = await getFileTags(doc);
-            setTemplate(fieldsToSharePoint);
+            setState(pState => ({...pState, templates: fieldsToSharePoint}));
 
         };
         reader.readAsBinaryString(file);
     };
 
-    return [templates, setTemplate,handleFile];
+    return handleFile;
 }

@@ -8,7 +8,7 @@ import {
 } from '@microsoft/sp-property-pane';
 
 import * as strings from 'DocxjsWebPartStrings';
-import Docxjs from './components/Docxjs';
+import TemplateGen from './components/DocxContext';
 import { IDocxjsProps } from './components/IDocxjsProps';
 import { PageContext } from '@microsoft/sp-page-context';
 import { sp } from "@pnp/sp";
@@ -20,13 +20,17 @@ export interface IDocxjsWebPartProps {
 
 export default class DocxjsWebPart extends BaseClientSideWebPart<IDocxjsWebPartProps> {
 
-  public render(): void {
-      sp.setup({  
+  public onInit(): Promise<void> {
+    return super.onInit().then(() => {
+      sp.setup({
         spfxContext: this.context
+      });
     });
+  }
+  public render(): void {
 
-    const element: React.ReactElement<IDocxjsProps > = React.createElement(
-      Docxjs,
+    const element: React.ReactElement<IDocxjsProps> = React.createElement(
+      TemplateGen,
       {
         description: this.properties.description,
         pageCtx: this.properties.pageCtx
