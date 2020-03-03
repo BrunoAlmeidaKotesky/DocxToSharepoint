@@ -4,6 +4,7 @@ import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/fields"; 
 import { DateTimeFieldFormatType, CalendarType, DateTimeFieldFriendlyFormatType } from "@pnp/sp/fields/types";
+import { IList } from '@pnp/sp/lists';
 
 export async function createList(listName: string) {
     const listAddResult = await sp.web.lists.add(listName);
@@ -56,3 +57,6 @@ export async function addFields(listName: string, fields: ITemplateField[]) {
       catch(e){console.log(e);} 
     }
 }
+
+export const loadAllLists = async () => await sp.web.lists.get();
+export const loadFieldFromList = async (listName:string) => await sp.web.lists.getByTitle(listName).fields.get();

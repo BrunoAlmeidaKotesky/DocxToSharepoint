@@ -8,6 +8,7 @@ export function TemplateForm():JSX.Element{
     const {templates, isEdit} = useContext(stateCtx);
     const editIco: IIconProps = { iconName: 'Edit' };
     const {changeEditForm, TemplateItems} = useTemplateHandle();
+    
     return(<>
         {templates.length > 0 ? templates.map((t, i) =>
             <div>

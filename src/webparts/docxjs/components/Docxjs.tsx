@@ -13,6 +13,6 @@ export default function Docxjs(props: IDocxjsProps): JSX.Element {
     return (<>
         <input type="file" accept="docx" onChange={handleFile} />
         <TemplateForm/>
-        <DefaultButton text="Enviar" onClick={() => sendFields('batchot')} />
+        <DefaultButton text="Enviar" onClick={() => sendFields('TesteTemp')} />
     </>);
 }
