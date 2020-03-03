@@ -4,7 +4,7 @@ export interface ITemplateField {
     field: string;
     fieldType: FieldTypess; 
     choice?: {choices: any[], type: ChoiceFieldFormatType};
-    lookup?: {list: string[] , field: string};
+    lookup?: {list: string, field: string};
 }
 
 export interface ITemplateGen {

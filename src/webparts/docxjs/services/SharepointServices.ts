@@ -42,11 +42,11 @@ export async function addFields(listName: string, fields: ITemplateField[]) {
        }
    
        else if (f.fieldType === FieldTypess.FLookUp) {
-           f.lookup.list.forEach(async name => {
+                let name = f.lookup.list;
                const listLookUp = await sp.web.lists.getByTitle(name)();
                await list.fields.addLookup(f.field, listLookUp.Id, f.lookup.field);
                await list.fields.getByTitle(f.field).setShowInDisplayForm(true);
-           });
+       
        }
    
        else if (f.fieldType === FieldTypess.FData) {  
@@ -59,4 +59,7 @@ export async function addFields(listName: string, fields: ITemplateField[]) {
 }
 
 export const loadAllLists = async () => await sp.web.lists.get();
-export const loadFieldFromList = async (listName:string) => await sp.web.lists.getByTitle(listName).fields.get();
+export const loadFieldFromList = async (listName:string) => {
+    let fieldInfo = await sp.web.lists.getByTitle(listName).fields.get();
+    return {fieldInfo, listName};
+};

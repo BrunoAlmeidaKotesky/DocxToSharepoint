@@ -44,26 +44,35 @@ export const useTemplateHandle=():ITemplateForm=>{
         loadAllLists();
      },[]);
 
-     const populateLookUpField = async (opt:IDropdownOption, tempState: ITemplateField[]) => {
-        let fieldsInfo = await loadFieldFromList(opt.text);
+     const populateLookUpField = async (opt:IDropdownOption, exactField: string) => {
+        let {fieldInfo, listName} = await loadFieldFromList(opt.text);
         let comboField: IDropdownOption[] = [];
-        fieldsInfo.forEach(r =>{
+        fieldInfo.forEach(r =>{
             comboField.push({key: r.InternalName, text: r.EntityPropertyName, data: r.Id});
         });
         
+        const updateLookUp=(op:IDropdownOption)=>{
+            templates.filter(t=>{
+                if(t.field === exactField){
+                    t.lookup.field = op.text;
+                    t.lookup.list = listName;
+                }
+            });
+        };
+
         return(<>
-            <Dropdown options={comboField} onChange={()=> console.log}/>
+            <Dropdown options={comboField} onChange={(e,op)=> console.log}/>
          </>);
      };
 
-     const populateLookUpList = async (temp: ITemplateField[]) => {
+     const populateLookUpList = async (exactField: string) => {
         const lists = await loadAllLists();
         let listCombo:IDropdownOption[]=[];
         lists.forEach(l =>{
             listCombo.push({key: l.EntityTypeName, text: l.EntityTypeName});
         });
         return(<>
-           <Dropdown options={listCombo} onChange={(e, opt)=> populateLookUpField(opt, temp)}/>
+           <Dropdown options={listCombo} onChange={(e, opt)=> populateLookUpField(opt, exactField)}/>
         </>);
      };
    
@@ -75,7 +84,7 @@ export const useTemplateHandle=():ITemplateForm=>{
          else if(edit === true && idx !== fields.field)
              return(<Text id={fields.field} nowrap variant="mediumPlus">{fields.fieldType}</Text>);
          else if(fields.field === FieldTypess.FLookUp){
-            populateLookUpList(templates);
+            populateLookUpList(idx);
         }
      };
 
