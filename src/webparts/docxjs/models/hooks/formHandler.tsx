@@ -8,7 +8,9 @@ import { loadAllLists, loadFieldFromList } from '../../services/SharepointServic
 export const useTemplateHandle=():ITemplateForm=>{
     const {templates, isEdit, comboOpt} = useContext(stateCtx);
     const setState = useContext(dispatchCtx);
-   
+    const [list, setLists] = React.useState([]);
+    const [fieldLookUp, setLookUp] = React.useState([]);
+
      const changeEditForm = (idx: string) => {
          if (templates.length !== 0 && templates !== undefined) {
              let actualOpt: IDropdownOption[] = [];
@@ -44,48 +46,54 @@ export const useTemplateHandle=():ITemplateForm=>{
         loadAllLists();
      },[]);
 
-     const populateLookUpField = async (opt:IDropdownOption, exactField: string) => {
+     const populateLookUpField = async (opt:IDropdownOption) => {
         let {fieldInfo, listName} = await loadFieldFromList(opt.text);
         let comboField: IDropdownOption[] = [];
         fieldInfo.forEach(r =>{
             comboField.push({key: r.InternalName, text: r.EntityPropertyName, data: r.Id});
         });
+        setLookUp(comboField);
         
         const updateLookUp=(op:IDropdownOption)=>{
-            templates.filter(t=>{
-                if(t.field === exactField){
-                    t.lookup.field = op.text;
+            templates.forEach(t=>{
+                    t.lookup.field = op.key.toString();
                     t.lookup.list = listName;
-                }
             });
+
+            setState(pState =>({...pState, templates: templates}));
         };
 
         return(<>
-            <Dropdown options={comboField} onChange={(e,op)=> console.log}/>
+           
          </>);
      };
 
-     const populateLookUpList = async (exactField: string) => {
+     const populateLookUpList = async () => {
         const lists = await loadAllLists();
         let listCombo:IDropdownOption[]=[];
-        lists.forEach(l =>{
-            listCombo.push({key: l.EntityTypeName, text: l.EntityTypeName});
+        lists.filter(l =>{
+            if(l.BaseType === 0 || l.BaseType === "GenericList")
+            listCombo.push({key: l.Id, text: l.Title});
         });
-        return(<>
-           <Dropdown options={listCombo} onChange={(e, opt)=> populateLookUpField(opt, exactField)}/>
-        </>);
+        setLists(listCombo);
      };
    
      const TemplateItems = (edit: boolean, idx: string, fields: ITemplateField) => {
-         if (edit === false)
-             return (<Text id={fields.field} nowrap variant="mediumPlus">{fields.fieldType}</Text>);
+         if (edit === false){
+            if(fields.fieldType === FieldTypess.FLookUp){
+                populateLookUpList();
+                if(list.length> 0){
+                    return <Dropdown options={list} onChange={(e, opt)=> populateLookUpField(opt)}/>;
+                }
+            }
+            else return (<Text id={fields.field} nowrap variant="mediumPlus">{fields.fieldType}</Text>);
+
+         }
          else if (edit === true && idx === fields.field)
              return (<Dropdown id={fields.field} options={comboOpt} onChange={(e, opt) => handleCombosChange(fields.field, e, opt)} defaultSelectedKey={fields.fieldType} />);
          else if(edit === true && idx !== fields.field)
              return(<Text id={fields.field} nowrap variant="mediumPlus">{fields.fieldType}</Text>);
-         else if(fields.field === FieldTypess.FLookUp){
-            populateLookUpList(idx);
-        }
+         
      };
 
      return {changeEditForm, TemplateItems};
