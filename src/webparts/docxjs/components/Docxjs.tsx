@@ -5,6 +5,7 @@ import { useTemplateGen } from '../models/hooks/docxGenerator';
 import {  DefaultButton, } from 'office-ui-fabric-react';
 import { stateCtx, } from './DocxContext';
 import {TemplateForm} from './TemplateForm';
+import { FieldTypess } from '../models/interfaces/ITemplate';
 
 export default function Docxjs(props: IDocxjsProps): JSX.Element {
     const {sendFields, handleFile } = useTemplateGen();

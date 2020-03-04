@@ -58,18 +58,8 @@ export const useTemplateHandle = (): ITemplateForm => {
                 if (t.fieldType === FieldTypess.FNumeric) {
                     actualOpt.push({ key: t.fieldType, text: "Num", selected: true, data: t.field });
                 }
-                if (t.fieldType === FieldTypess.FLookUp) {
-                    actualOpt.push({ key: t.fieldType, text: "Num", selected: true, data: t.field });
-                    populateLookUpList();
-                    if (list.length > 0) {
-                        return (<>
-                            <Dropdown options={list} onChange={(e, opt) => populateLookUpField(opt)} />
-                            {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChange={(e, opt) => updateLookUp(opt)} />}
-                        </>);
-                    }
-                }
-                setState(pState => ({ ...pState, comboOpt: actualOpt }));
             });
+            setState(pState => ({ ...pState, comboOpt: actualOpt }));
             console.log(templates);
         }
         setState(pState => ({ ...pState, isEdit: { edit: !isEdit.edit, selectedIdx: idx } }));
