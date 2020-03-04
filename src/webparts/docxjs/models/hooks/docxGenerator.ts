@@ -31,7 +31,7 @@ export function useTemplateGen():ITemplateGen {
             return fieldObj;
         }
         else if(field.startsWith('c')){
-             fieldObj = {field: field.substring(1), fieldType: FieldTypess.FLookUp};
+             fieldObj = {field: field.substring(1), fieldType: FieldTypess.FLookUp, lookup: {field: undefined, list: undefined}};
             return fieldObj;
         }
         else if(field.startsWith('e')){

@@ -60,6 +60,9 @@ export async function addFields(listName: string, fields: ITemplateField[]) {
 
 export const loadAllLists = async () => await sp.web.lists.get();
 export const loadFieldFromList = async (listName:string) => {
-    let fieldInfo = await sp.web.lists.getByTitle(listName).fields.get();
-    return {fieldInfo, listName};
+    let fieldInfo = await sp.web.lists.getByTitle(listName).fields.select().get();
+    const userFields = fieldInfo.filter(f =>{
+        return f.FromBaseType === false;
+    });
+    return {userFields, listName};
 };
