@@ -4,18 +4,22 @@ import {IStore} from '../models/interfaces/IStore';
 import {RDispatch, RNodes, Dispatch} from '../models/types/types';
 import {IDocxjsProps} from '../components/IDocxjsProps';
 import Docxjs from '../components/Docxjs';
+import { Provider } from "react-redux";
+import configureStore, { RootState } from '../redux/store';
 
-export const stateCtx = createContext<IStore>({templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
+export const stateCtx = createContext<IStore>({loaded: false, templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
 
 export const dispatchCtx = createContext<RDispatch<IStore>| Dispatch>(undefined);
 
 export const ProviderDocx = ({children}:RNodes) => {
-    const [state, setState] = useState<IStore>({templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
-    return(<stateCtx.Provider value={state}>
+    const [state, setState] = useState<IStore>({loaded: false, templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
+    return(<Provider store={configureStore()}>
+    <stateCtx.Provider value={state}>
         <dispatchCtx.Provider value={setState}>
           {children}
         </dispatchCtx.Provider>
       </stateCtx.Provider>
+      </Provider>
       );
 
 };

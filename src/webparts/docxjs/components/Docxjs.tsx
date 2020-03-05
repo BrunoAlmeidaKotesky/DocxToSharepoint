@@ -6,11 +6,14 @@ import {  DefaultButton, } from 'office-ui-fabric-react';
 import { stateCtx, } from './DocxContext';
 import {TemplateForm} from './TemplateForm';
 import { FieldTypess } from '../models/interfaces/ITemplate';
+import {useDispatch, useSelector} from 'react-redux';
+import { RootState } from '../redux/store';
 
 export default function Docxjs(props: IDocxjsProps): JSX.Element {
     const {sendFields, handleFile } = useTemplateGen();
-    const { templates } = useContext(stateCtx);
-
+    //const { templates } = useContext(stateCtx);
+    const {templates} = useSelector((store: RootState) => store.templates);
+    React.useEffect(() => console.log(templates), [templates]);
     return (<>
         <input type="file" accept="docx" onChange={handleFile} />
         <TemplateForm/>

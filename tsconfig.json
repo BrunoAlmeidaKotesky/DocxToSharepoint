@@ -10,23 +10,33 @@
     "sourceMap": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
     "outDir": "lib",
     "inlineSources": false,
     "strictNullChecks": false,
     "noUnusedLocals": false,
     "typeRoots": [
       "./node_modules/@types",
-      "./node_modules/@microsoft"
+      "./node_modules/@microsoft",
+      "./node_modules/@types"
+
     ],
     "types": [
       "es6-promise",
-      "webpack-env"
+      "webpack-env",
+      "reflect-metadata",
+      "jest"
     ],
     "lib": [
       "es5",
       "dom",
       "es2015.collection",
-      "esnext"
+      "esnext",
+      "es6",
+      "DOM.Iterable",
+      "ES2015",
+      "dom.iterable",
+      "es2015.iterable"
     ]
   },
   "include": [
@@ -34,6 +44,7 @@
   ],
   "exclude": [
     "node_modules",
-    "lib"
+    "lib",
+    "**/__tests__/*"
   ]
 }

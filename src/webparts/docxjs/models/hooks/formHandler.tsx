@@ -5,9 +5,10 @@ import { useContext } from 'react';
 import { stateCtx, dispatchCtx } from '../../components/DocxContext';
 import { loadAllLists, loadFieldFromList } from '../../services/SharepointServices';
 
-export const useTemplateHandle = (): ITemplateForm => {
-    const { templates, isEdit, comboOpt } = useContext(stateCtx);
+export const useTemplateHandle = (): ITemplateForm => { 
+    const { templates, isEdit, comboOpt, loaded } = useContext(stateCtx);
     const setState = useContext(dispatchCtx);
+    const [loaded1] = React.useState([]);
     const [list, setLists] = React.useState([]);
     const [fieldLookUp, setLookUp] = React.useState([]);
 
@@ -21,25 +22,27 @@ export const useTemplateHandle = (): ITemplateForm => {
         setLists(listCombo);
     };
 
-    const populateLookUpField = async (opt: IDropdownOption) => {
+    const populateLookUpField = async (opt: IDropdownOption, field:string) => {
         let { userFields, listName } = await loadFieldFromList(opt.text);
         let comboField: IDropdownOption[] = [];
         userFields.forEach(r => {
-            comboField.push({ key: r.InternalName, text: r.Title, data: listName });
+            comboField.push({ key: r.InternalName, text: r.Title, data: {listName, field} });
         });
         setLookUp(comboField);
     };
 
-    const updateLookUp = (op: IDropdownOption) => {
-        templates.forEach(t => {
-            if (t?.lookup) {
-                t.lookup.field = op.key.toString();
-                t.lookup.list = op.data;
-            }
-        });
+    const updateLookUp = (op: IDropdownOption, idx:string) => {
 
-        setState(pState => ({ ...pState, templates: templates }));
+        templates.forEach((el, i) => {
+                if (el.field === idx) {
+                    if(op.data.field === idx){
+                        templates[i].lookup.field = op.key.toString();
+                        templates[i].lookup.list = op.data.listName;
+                    }
+                }
+        });
         console.log(templates);
+        setState(pState => ({ ...pState, templates: templates }));
     };
 
     const changeEditForm = (idx: string) => {
@@ -58,6 +61,9 @@ export const useTemplateHandle = (): ITemplateForm => {
                 if (t.fieldType === FieldTypess.FNumeric) {
                     actualOpt.push({ key: t.fieldType, text: "Num", selected: true, data: t.field });
                 }
+                if (t.fieldType === FieldTypess.FLookUp) {
+                    actualOpt.push({ key: t.fieldType, text: "LookUp", selected: true, data: t.field });
+                }
             });
             setState(pState => ({ ...pState, comboOpt: actualOpt }));
             console.log(templates);
@@ -65,7 +71,7 @@ export const useTemplateHandle = (): ITemplateForm => {
         setState(pState => ({ ...pState, isEdit: { edit: !isEdit.edit, selectedIdx: idx } }));
     };
 
-    const handleCombosChange = (opt: string, event: React.FormEvent<HTMLDivElement>, ddpOpt: IDropdownOption) => {
+    const handleCombosChange = (opt: string, ddpOpt: IDropdownOption) => {
         templates.filter((t) => {
             if (t.field === opt)
                 t.fieldType = (ddpOpt.key as FieldTypess);
@@ -79,8 +85,8 @@ export const useTemplateHandle = (): ITemplateForm => {
                 populateLookUpList();
                 if (list.length > 0) {
                     return (<>
-                        <Dropdown options={list} onChange={(e, opt) => populateLookUpField(opt)} />
-                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChange={(e, opt) => updateLookUp(opt)} />}
+                        <Dropdown options={list} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
+                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt , idx)} />}
                     </>);
                 }
             }
@@ -92,12 +98,12 @@ export const useTemplateHandle = (): ITemplateForm => {
                 populateLookUpList();
                 if (list.length > 0) {
                     return (<>
-                        <Dropdown options={list} onChange={(e, opt) => populateLookUpField(opt)} />
-                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChange={(e, opt) => updateLookUp(opt)} />}
+                        <Dropdown options={list} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
+                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt, idx)} />}
                     </>);
                 }
             }
-            else return (<Dropdown id={fields.field} options={comboOpt} onChange={(e, opt) => handleCombosChange(fields.field, e, opt)} defaultSelectedKey={fields.fieldType} />);
+            else return (<Dropdown id={fields.field} options={comboOpt} onChanged={(opt) => handleCombosChange(fields.field, opt)} defaultSelectedKey={fields.fieldType} />);
 
         }
         else if (edit === true && idx !== fields.field)

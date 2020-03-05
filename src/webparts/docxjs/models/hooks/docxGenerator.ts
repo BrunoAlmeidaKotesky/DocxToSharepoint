@@ -1,4 +1,7 @@
-import * as PizZip from 'pizzip';
+import { TemplateActions } from './../../redux/actions/actionTypes';
+import { RootState } from './../../redux/store';
+import { templateReducer } from './../../redux/reducers/templateReducer';
+import PizZip from 'pizzip';
 import * as React from 'react';
 import Docxtemplater from 'docxtemplater';
 let InspectModule = require('docxtemplater/js/inspect-module');
@@ -7,26 +10,34 @@ import { ITemplateField, FieldTypess, ITemplateGen } from '../interfaces/ITempla
 import { stateCtx, dispatchCtx } from '../../components/DocxContext';
 import { createList, addFields } from '../../services/SharepointServices';
 import {assertLookFieldValue, LookUpFieldStatus} from '../../utils/utils';
+import {useDispatch, useSelector} from 'react-redux';
+import {setInitialTemplate} from '../../redux/actions/actions';
+import configureStore from '../../redux/store';
 
 let iModule = InspectModule();
 
 export function useTemplateGen(): ITemplateGen {
-    const { templates } = useContext(stateCtx);
-    const setState = useContext(dispatchCtx);
-    React.useEffect(() => console.log(templates), [templates]);
+    //const { templates } = useContext(stateCtx);
+    //const setState = useContext(dispatchCtx);
+    const store = configureStore();
+    const dispatch=(T:TemplateActions)=> store.dispatch(T);
+    const state = store.getState();
+    const {templates} = state.templates;
+    
+    
 
     function validateFieldType(field: string) {
         let fieldObj: ITemplateField;
         if (field.startsWith('t')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine, lookup: { field: undefined, list: undefined } };
             return fieldObj;
         }
         else if (field.startsWith('n')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric, lookup: { field: undefined, list: undefined } };
             return fieldObj;
         }
         else if (field.startsWith('$')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary, lookup: { field: undefined, list: undefined } };
             return fieldObj;
         }
         else if (field.startsWith('c')) {
@@ -34,11 +45,11 @@ export function useTemplateGen(): ITemplateGen {
             return fieldObj;
         }
         else if (field.startsWith('e')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice, lookup: { field: undefined, list: undefined } };
             return fieldObj;
         }
         else if (field.startsWith('d')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData, lookup: { field: undefined, list: undefined } };
             return fieldObj;
         }
         else {
@@ -70,8 +81,8 @@ export function useTemplateGen(): ITemplateGen {
             let zip = new PizZip(reader.result);
             let doc = new Docxtemplater().loadZip(zip);
             let fieldsToSharePoint = await getFileTags(doc);
-            setState(pState => ({ ...pState, templates: fieldsToSharePoint }));
-
+            //setState(pState => ({ ...pState, templates: fieldsToSharePoint }));
+            dispatch(setInitialTemplate(fieldsToSharePoint));
         };
         reader.readAsBinaryString(file);
     };
