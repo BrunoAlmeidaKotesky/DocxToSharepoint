@@ -5,11 +5,11 @@ import {initialState} from '../store';
 import {Reducer} from 'redux';
 
 export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore = initialState, action: TemplateActions) =>{
+
     switch(action.type) {
         case SET_INITIAL_TEMPLATES: {
-            return {...state, ...action.payload};
+            return {...state, templates: [...action.payload]};
         }
-        default: return state;
-            
+        default: {return state;}            
     }
 };

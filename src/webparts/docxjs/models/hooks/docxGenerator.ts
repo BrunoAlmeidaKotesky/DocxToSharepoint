@@ -22,7 +22,7 @@ export function useTemplateGen(): ITemplateGen {
     const store = configureStore();
     const dispatch=(T:TemplateActions)=> store.dispatch(T);
     const state = store.getState();
-    const {templates} = state.templates;
+    const {templates} = state.templatesReducer;
     
     
 

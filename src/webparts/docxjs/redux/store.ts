@@ -13,7 +13,7 @@ declare global {
  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
- templates: templateReducer
+ templatesReducer: templateReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

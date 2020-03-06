@@ -12,9 +12,10 @@ import { RootState } from '../redux/store';
 export default function Docxjs(props: IDocxjsProps): JSX.Element {
     const {sendFields, handleFile } = useTemplateGen();
     //const { templates } = useContext(stateCtx);
-    const {templates} = useSelector((store: RootState) => store.templates);
-    React.useEffect(() => console.log(templates), [templates]);
+    const {templates} = useSelector((store: RootState) => store.templatesReducer);
+    React.useEffect(() => console.log(templates));
     return (<>
+        <div>{templates.length !== 0 && templates[0].field}</div>
         <input type="file" accept="docx" onChange={handleFile} />
         <TemplateForm/>
         <DefaultButton text="Enviar" onClick={() => sendFields('testeDelete')} />
