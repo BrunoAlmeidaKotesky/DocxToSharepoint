@@ -1,10 +1,10 @@
 import { IDropdownOption } from 'office-ui-fabric-react';
 import { ChoiceFieldFormatType} from "@pnp/sp/fields";
 export interface ITemplateField {
-    field: string;
+   readonly field: string;
     fieldType: FieldTypess; 
-    choice?: {choices: any[], type: ChoiceFieldFormatType};
-    lookup?: {list: string, field: string};
+   readonly choice?: {choices: any[], type: ChoiceFieldFormatType};
+   readonly lookup?: {list: string, field: string};
 }
 
 export interface ITemplateGen {
@@ -14,7 +14,7 @@ export interface ITemplateGen {
 }
 
 export interface ITemplateForm{
-    changeEditForm(idx: string): void;
+    populateWitTypeOpt(idx: string): void;
     TemplateItems: (edit: boolean, idx: string, fields: ITemplateField) => JSX.Element;
 }
 

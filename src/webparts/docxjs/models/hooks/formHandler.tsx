@@ -4,11 +4,14 @@ import { IDropdownOption, Text, Dropdown } from 'office-ui-fabric-react';
 import { useContext } from 'react';
 import { stateCtx, dispatchCtx } from '../../components/DocxContext';
 import { loadAllLists, loadFieldFromList } from '../../services/SharepointServices';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { populateFieldTypeDdp, changeTemplateFieldType } from '../../redux/actions/actions';
 
-export const useTemplateHandle = (): ITemplateForm => { 
-    const { templates, isEdit, comboOpt, loaded } = useContext(stateCtx);
+export const useTemplateHandle = (): ITemplateForm => {
+    const { templates, isEdit, comboOpt, loaded } = useSelector((state: RootState) => state.templatesReducer);
+    const dispatch = useDispatch();
     const setState = useContext(dispatchCtx);
-    const [loaded1] = React.useState([]);
     const [list, setLists] = React.useState([]);
     const [fieldLookUp, setLookUp] = React.useState([]);
 
@@ -22,71 +25,51 @@ export const useTemplateHandle = (): ITemplateForm => {
         setLists(listCombo);
     };
 
-    const populateLookUpField = async (opt: IDropdownOption, field:string) => {
+    const populateLookUpField = async (opt: IDropdownOption, field: string) => {
         let { userFields, listName } = await loadFieldFromList(opt.text);
         let comboField: IDropdownOption[] = [];
         userFields.forEach(r => {
-            comboField.push({ key: r.InternalName, text: r.Title, data: {listName, field} });
+            comboField.push({ key: r.InternalName, text: r.Title, data: { listName, field } });
         });
         setLookUp(comboField);
     };
 
-    const updateLookUp = (op: IDropdownOption, idx:string) => {
+    const updateLookUp = (op: IDropdownOption, idx: string) => {
 
         templates.forEach((el, i) => {
-                if (el.field === idx) {
-                    if(op.data.field === idx){
-                        templates[i].lookup.field = op.key.toString();
-                        templates[i].lookup.list = op.data.listName;
-                    }
+            if (el.field === idx) {
+                if (op.data.field === idx) {
+                    templates[i].lookup.field = op.key.toString();
+                    templates[i].lookup.list = op.data.listName;
                 }
+            }
         });
         console.log(templates);
         setState(pState => ({ ...pState, templates: templates }));
     };
 
-    const changeEditForm = (idx: string) => {
-        if (templates.length !== 0 && templates !== undefined) {
-            let actualOpt: IDropdownOption[] = [];
-            templates.forEach(t => {
-                if (t.fieldType === FieldTypess.FSingleLine) {
-                    actualOpt.push({ key: t.fieldType, text: "Texto", selected: true, data: t.field });
-                }
-                if (t.fieldType === FieldTypess.FMonetary) {
-                    actualOpt.push({ key: t.fieldType, text: "Moeda", selected: true, data: t.field });
-                }
-                if (t.fieldType === FieldTypess.FData) {
-                    actualOpt.push({ key: t.fieldType, text: "Data", selected: true, data: t.field });
-                }
-                if (t.fieldType === FieldTypess.FNumeric) {
-                    actualOpt.push({ key: t.fieldType, text: "Num", selected: true, data: t.field });
-                }
-                if (t.fieldType === FieldTypess.FLookUp) {
-                    actualOpt.push({ key: t.fieldType, text: "LookUp", selected: true, data: t.field });
-                }
-            });
-            setState(pState => ({ ...pState, comboOpt: actualOpt }));
-            console.log(templates);
-        }
-        setState(pState => ({ ...pState, isEdit: { edit: !isEdit.edit, selectedIdx: idx } }));
+    const populateWitTypeOpt = (idx: string) => {
+        const actualOpt: IDropdownOption[] = [
+            { key: FieldTypess.FSingleLine, text: "Texto", selected: true },
+            { key: FieldTypess.FMonetary, text: "Moeda", selected: true },
+            { key: FieldTypess.FData, text: "Data", selected: true },
+            { key: FieldTypess.FNumeric, text: "Num", selected: true },
+            { key: FieldTypess.FLookUp, text: "LookUp", selected: true }
+        ];
+        dispatch(populateFieldTypeDdp({ idx: idx, option: actualOpt, isEditing: !isEdit.edit }));
     };
 
-    const handleCombosChange = (opt: string, ddpOpt: IDropdownOption) => {
-        templates.filter((t) => {
-            if (t.field === opt)
-                t.fieldType = (ddpOpt.key as FieldTypess);
-        });
-        setState(pState => ({ ...pState, templates: templates }));
-    };
+    const handleCombosChange = (opt: string, ddpOpt: IDropdownOption) => dispatch(changeTemplateFieldType(opt, (ddpOpt.text as FieldTypess)));
 
-    const TemplateItems = (edit: boolean, idx: string, fields: ITemplateField) => {
+
+    const TemplateItems = (edit: boolean, idx: string, fields: ITemplateField): JSX.Element => {
         if (edit === false) {
             if (fields.fieldType === FieldTypess.FLookUp) {
                 populateLookUpList();
                 if (list.length > 0) {
                     return (<>
                         <Dropdown options={list} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
-                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt , idx)} />}
+                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt, idx)} />}
                     </>);
                 }
             }
@@ -110,5 +93,5 @@ export const useTemplateHandle = (): ITemplateForm => {
             return (<Text id={fields.field} nowrap variant="mediumPlus">{fields.fieldType}</Text>);
 
     };
-    return { changeEditForm, TemplateItems };
+    return { populateWitTypeOpt, TemplateItems };
 };
