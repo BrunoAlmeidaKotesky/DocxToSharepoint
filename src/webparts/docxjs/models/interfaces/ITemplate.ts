@@ -11,6 +11,7 @@ export interface ITemplateGen {
     handleFile(e: React.ChangeEvent<HTMLInputElement>): void;
     sendFields(listName: string): Promise<void>;
     templates : ITemplateField[];
+    ref: React.MutableRefObject<HTMLInputElement>;
 }
 
 export interface ITemplateForm{

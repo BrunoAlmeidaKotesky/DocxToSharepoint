@@ -3,27 +3,31 @@ import { ITemplateField, FieldTypess } from './../../models/interfaces/ITemplate
 import { IStore } from "../../models/interfaces/IStore";
 
 
- 
-export const SET_INITIAL_TEMPLATES = 'SET_INITIAL_TEMPLATES';
-
-export enum PopulateAction {
+export enum Actions {
     POPULATE_LIST_TEMPLATE = 'POPULATE_LIST_TEMPLATE',
-    CHANGE_ITEM_TYPE = 'CHANGE_ITEM_TYPE'
+    CHANGE_ITEM_TYPE = 'CHANGE_ITEM_TYPE',
+    SET_INITIAL_TEMPLATES = 'SET_INITIAL_TEMPLATES',
+    RESET_STATE = 'RESET_STATE'
 }
+
 export type PopulateFieldTypes = {idx: string, isEditing?: boolean, option?: IDropdownOption[]};
 export type ChangeType = {idx: string, type:FieldTypess};
 
 interface FileHandler {
-    type: typeof SET_INITIAL_TEMPLATES;
+    type: Actions.SET_INITIAL_TEMPLATES;
     payload?: ITemplateField[];
   }
 
 interface ChangeTemplateType {
-  type: PopulateAction.CHANGE_ITEM_TYPE;
+  type: Actions.CHANGE_ITEM_TYPE;
   payload?: ChangeType;
 }
 interface PopulateTemplate {
-  type: PopulateAction.POPULATE_LIST_TEMPLATE;
+  type: Actions.POPULATE_LIST_TEMPLATE;
   payload?: PopulateFieldTypes;
 }
-  export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType;
+
+interface ResetFile {
+  type: Actions.RESET_STATE;
+}
+  export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile;

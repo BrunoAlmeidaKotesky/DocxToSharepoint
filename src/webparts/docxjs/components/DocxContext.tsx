@@ -5,7 +5,7 @@ import {RDispatch, RNodes, Dispatch} from '../models/types/types';
 import {IDocxjsProps} from '../components/IDocxjsProps';
 import Docxjs from '../components/Docxjs';
 import { Provider } from "react-redux";
-import configureStore, { RootState } from '../redux/store';
+import configureStore from '../redux/store';
 
 export const stateCtx = createContext<IStore>({loaded: false, templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
 

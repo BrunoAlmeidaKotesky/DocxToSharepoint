@@ -1,24 +1,21 @@
-import { TemplateActions } from './../../redux/actions/actionTypes';
 import { RootState } from './../../redux/store';
-import { templateReducer } from './../../redux/reducers/templateReducer';
 import PizZip from 'pizzip';
 import * as React from 'react';
 import Docxtemplater from 'docxtemplater';
 let InspectModule = require('docxtemplater/js/inspect-module');
-import { useContext } from 'react';
 import { ITemplateField, FieldTypess, ITemplateGen } from '../interfaces/ITemplate';
-import { stateCtx, dispatchCtx } from '../../components/DocxContext';
 import { createList, addFields } from '../../services/SharepointServices';
 import {assertLookFieldValue, LookUpFieldStatus} from '../../utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
-import {setInitialTemplate} from '../../redux/actions/actions';
-import configureStore from '../../redux/store';
+import {setInitialTemplate, resetState} from '../../redux/actions/actions';
 
 let iModule = InspectModule();
 
 export function useTemplateGen(): ITemplateGen {
     const dispatch = useDispatch();
     const templates = useSelector((state:RootState) => state.templatesReducer.templates);
+    const [isFirstFile, setFileOrder] = React.useState(0);
+    const ref = React.useRef<HTMLInputElement>(undefined);
 
     function validateFieldType(field: string) {
         let fieldObj: ITemplateField;
@@ -72,11 +69,16 @@ export function useTemplateGen(): ITemplateGen {
         const reader = new FileReader();
 
         reader.onload = async () => {
-            let zip = new PizZip(reader.result);
-            let doc = new Docxtemplater().loadZip(zip);
-            let fieldsToSharePoint = await getFileTags(doc);
-            //setState(pState => ({ ...pState, templates: fieldsToSharePoint }));
-            dispatch(setInitialTemplate(fieldsToSharePoint));
+            if(isFirstFile === 1){
+                dispatch(resetState());
+            }
+                let zip = new PizZip(reader.result);
+                let doc = new Docxtemplater().loadZip(zip);
+                let fieldsToSharePoint = await getFileTags(doc);
+                dispatch(setInitialTemplate(fieldsToSharePoint));
+                fieldsToSharePoint = [];
+                ref.current.value = '';
+                setFileOrder(1);
         };
         reader.readAsBinaryString(file);
     };
@@ -102,5 +104,5 @@ export function useTemplateGen(): ITemplateGen {
         }
     };
 
-    return { handleFile, sendFields, templates };
+    return { handleFile, sendFields, templates, ref };
 }
