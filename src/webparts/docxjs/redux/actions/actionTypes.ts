@@ -1,17 +1,14 @@
 import { IDropdownOption } from 'office-ui-fabric-react';
-import { ITemplateField, FieldTypess } from './../../models/interfaces/ITemplate';
-import { IStore } from "../../models/interfaces/IStore";
-
-
+import { ITemplateField } from './../../models/interfaces/ITemplate';
+import {PopulateFieldTypes, ChangeType} from '../../models/types/types';
 export enum Actions {
     POPULATE_LIST_TEMPLATE = 'POPULATE_LIST_TEMPLATE',
     CHANGE_ITEM_TYPE = 'CHANGE_ITEM_TYPE',
     SET_INITIAL_TEMPLATES = 'SET_INITIAL_TEMPLATES',
-    RESET_STATE = 'RESET_STATE'
+    RESET_STATE = 'RESET_STATE',
+    LOAD_LOOKUP_LIST = 'LOAD_LOOKUP_LIST',
+    LOAD_LOOKUP_FIELD = 'LOAD_LOOKUP_FIELD'
 }
-
-export type PopulateFieldTypes = {idx: string, isEditing?: boolean, option?: IDropdownOption[]};
-export type ChangeType = {idx: string, type:FieldTypess};
 
 interface FileHandler {
     type: Actions.SET_INITIAL_TEMPLATES;
@@ -30,4 +27,10 @@ interface PopulateTemplate {
 interface ResetFile {
   type: Actions.RESET_STATE;
 }
-  export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile;
+
+interface LoadLists {
+  type: Actions.LOAD_LOOKUP_LIST;
+  payload?: {listCombo: IDropdownOption[]};
+}
+
+export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile | LoadLists;

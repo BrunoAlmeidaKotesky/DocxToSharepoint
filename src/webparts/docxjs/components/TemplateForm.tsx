@@ -6,6 +6,7 @@ import { useTemplateHandle } from '../models/hooks/formHandler';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
+/**Renderiza as opções de dropdown conforme tipo dos items do template, e trata dos tipos de lookup*/
 export function TemplateForm():JSX.Element{
     const {templates, isEdit} = useSelector((state:RootState) => state.templatesReducer);
     const editIco: IIconProps = { iconName: 'Edit' };

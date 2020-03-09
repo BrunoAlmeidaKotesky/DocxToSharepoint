@@ -1,4 +1,3 @@
-import { ITemplateField } from './../../models/interfaces/ITemplate';
 import { TemplateActions, Actions} from './../actions/actionTypes';
 import { IStore } from './../../models/interfaces/IStore';
 import {initialState} from '../store';
@@ -21,6 +20,9 @@ export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore 
         }
         case Actions.RESET_STATE: {
             return initialState;
+        }
+        case Actions.LOAD_LOOKUP_LIST: {
+            return{...state, listOpt: action.payload.listCombo};
         }
         default: {return state;}            
     }

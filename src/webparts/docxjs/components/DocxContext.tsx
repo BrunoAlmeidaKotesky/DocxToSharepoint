@@ -7,12 +7,12 @@ import Docxjs from '../components/Docxjs';
 import { Provider } from "react-redux";
 import configureStore from '../redux/store';
 
-export const stateCtx = createContext<IStore>({loaded: false, templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
+export const stateCtx = createContext<Pick<IStore, 'comboOpt'|'isEdit'| 'loaded'|'templates'>>({loaded: false, templates:[], comboOpt:[],isEdit: {edit: false, selectedIdx: undefined}});
 
 export const dispatchCtx = createContext<RDispatch<IStore>| Dispatch>(undefined);
 
 export const ProviderDocx = ({children}:RNodes) => {
-    const [state, setState] = useState<IStore>({loaded: false, templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
+    const [state, setState] = useState<Pick<IStore, 'comboOpt'|'isEdit'| 'loaded'|'templates'>>({loaded: false, templates:[], comboOpt:[], isEdit: {edit: false, selectedIdx: undefined}});
     return(<Provider store={configureStore()}>
     <stateCtx.Provider value={state}>
         <dispatchCtx.Provider value={setState}>

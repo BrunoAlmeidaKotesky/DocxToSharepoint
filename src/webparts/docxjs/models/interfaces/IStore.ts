@@ -4,6 +4,8 @@ import {IDropdownOption} from 'office-ui-fabric-react';
 export interface IStore {
     readonly loaded: boolean;
     readonly templates: ITemplateField[];
-    comboOpt: IDropdownOption[];
+    readonly comboOpt: IDropdownOption[];
     readonly isEdit: { edit: boolean, selectedIdx: string };
+    readonly listOpt: IDropdownOption[];
+    readonly fieldsTOpt: IDropdownOption[];
 }

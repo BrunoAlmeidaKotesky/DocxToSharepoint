@@ -1,5 +1,6 @@
 import { IDropdownOption } from 'office-ui-fabric-react';
 import { ChoiceFieldFormatType} from "@pnp/sp/fields";
+
 export interface ITemplateField {
    readonly field: string;
     fieldType: FieldTypess; 

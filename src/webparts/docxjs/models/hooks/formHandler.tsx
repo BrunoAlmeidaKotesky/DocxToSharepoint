@@ -6,25 +6,14 @@ import { stateCtx, dispatchCtx } from '../../components/DocxContext';
 import { loadAllLists, loadFieldFromList } from '../../services/SharepointServices';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { populateFieldTypeDdp, changeTemplateFieldType } from '../../redux/actions/actions';
+import { populateFieldTypeDdp, changeTemplateFieldType, populateLookUpList } from '../../redux/actions/actions';
 
 export const useTemplateHandle = (): ITemplateForm => {
-    const { templates, isEdit, comboOpt, loaded } = useSelector((state: RootState) => state.templatesReducer);
+    const { templates, isEdit, comboOpt, listOpt } = useSelector((state: RootState) => state.templatesReducer);
     const dispatch = useDispatch();
     const setState = useContext(dispatchCtx);
-    const [list, setLists] = React.useState([]);
     const [fieldLookUp, setLookUp] = React.useState([]);
-
-    const populateLookUpList = async () => {
-        const lists = await loadAllLists();
-        let listCombo: IDropdownOption[] = [];
-        lists.filter(l => {
-            if (l.BaseType === 0 || l.BaseType === "GenericList")
-                listCombo.push({ key: l.Id, text: l.Title });
-        });
-        setLists(listCombo);
-    };
-
+    
     const populateLookUpField = async (opt: IDropdownOption, field: string) => {
         let { userFields, listName } = await loadFieldFromList(opt.text);
         let comboField: IDropdownOption[] = [];
@@ -59,16 +48,21 @@ export const useTemplateHandle = (): ITemplateForm => {
         dispatch(populateFieldTypeDdp({ idx: idx, option: actualOpt, isEditing: !isEdit.edit }));
     };
 
-    const handleCombosChange = (opt: string, ddpOpt: IDropdownOption) => dispatch(changeTemplateFieldType(opt, (ddpOpt.text as FieldTypess)));
+    const handleCombosChange = (opt: string, ddpOpt: IDropdownOption) => {
+        dispatch(changeTemplateFieldType(opt, (ddpOpt.text as FieldTypess)));
+        if(ddpOpt.key === FieldTypess.FLookUp){
+            dispatch(populateLookUpList());
+        }
+    };
 
 
     const TemplateItems = (edit: boolean, idx: string, fields: ITemplateField): JSX.Element => {
         if (edit === false) {
             if (fields.fieldType === FieldTypess.FLookUp) {
-                populateLookUpList();
-                if (list.length > 0) {
+
+                if (listOpt.length > 0) {
                     return (<>
-                        <Dropdown options={list} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
+                        <Dropdown options={listOpt} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
                         {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt, idx)} />}
                     </>);
                 }
@@ -78,10 +72,9 @@ export const useTemplateHandle = (): ITemplateForm => {
         }
         else if (edit === true && idx === fields.field) {
             if (fields.fieldType === FieldTypess.FLookUp) {
-                populateLookUpList();
-                if (list.length > 0) {
+                if (listOpt.length > 0) {
                     return (<>
-                        <Dropdown options={list} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
+                        <Dropdown options={listOpt} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
                         {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt, idx)} />}
                     </>);
                 }
