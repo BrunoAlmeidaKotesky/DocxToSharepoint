@@ -10,9 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import { RootState } from '../redux/store';
 
 export default function Docxjs(props: IDocxjsProps): JSX.Element {
-    const {sendFields, handleFile } = useTemplateGen();
-    //const { templates } = useContext(stateCtx);
-    const {templates} = useSelector((store: RootState) => store.templatesReducer);
+    const {sendFields, handleFile, templates } = useTemplateGen();
     React.useEffect(() => console.log(templates));
     return (<>
         <div>{templates.length !== 0 && templates[0].field}</div>

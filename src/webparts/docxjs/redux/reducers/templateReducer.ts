@@ -8,7 +8,9 @@ export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore 
 
     switch(action.type) {
         case SET_INITIAL_TEMPLATES: {
-            return {...state, templates: [...action.payload]};
+            const templates = [...state.templates];
+            templates.unshift(...action.payload);
+            return {...state, templates: templates};
         }
         default: {return state;}            
     }

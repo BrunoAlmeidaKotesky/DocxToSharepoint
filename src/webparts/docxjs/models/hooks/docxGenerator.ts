@@ -17,14 +17,8 @@ import configureStore from '../../redux/store';
 let iModule = InspectModule();
 
 export function useTemplateGen(): ITemplateGen {
-    //const { templates } = useContext(stateCtx);
-    //const setState = useContext(dispatchCtx);
-    const store = configureStore();
-    const dispatch=(T:TemplateActions)=> store.dispatch(T);
-    const state = store.getState();
-    const {templates} = state.templatesReducer;
-    
-    
+    const dispatch = useDispatch();
+    const templates = useSelector((state:RootState) => state.templatesReducer.templates);
 
     function validateFieldType(field: string) {
         let fieldObj: ITemplateField;
@@ -108,5 +102,5 @@ export function useTemplateGen(): ITemplateGen {
         }
     };
 
-    return { handleFile, sendFields };
+    return { handleFile, sendFields, templates };
 }
