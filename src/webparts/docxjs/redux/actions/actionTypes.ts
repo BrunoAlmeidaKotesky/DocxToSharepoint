@@ -9,7 +9,8 @@ export enum Actions {
     RESET_STATE = 'RESET_STATE',
     LOAD_LOOKUP_LIST = 'LOAD_LOOKUP_LIST',
     LOAD_LOOKUP_FIELD = 'LOAD_LOOKUP_FIELD',
-    CHANGE_TEMPLATE_LOOKUP = 'CHANGE_TEMPLATE_LOOKUP'
+    CHANGE_TEMPLATE_LOOKUP = 'CHANGE_TEMPLATE_LOOKUP',
+    SET_LOOKUP_VALUES = 'SET_LOOKUP_VALUES'
 }
 
 interface FileHandler {
@@ -40,4 +41,9 @@ interface LoadLookUp {
   payload: {fieldCombo: IDropdownOption[]};
 }
 
-export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile | LoadLists | LoadLookUp;
+interface SetLookUp {
+  type: Actions.SET_LOOKUP_VALUES;
+  payload:  ITemplateField[];
+}
+
+export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile | LoadLists | LoadLookUp | SetLookUp;
