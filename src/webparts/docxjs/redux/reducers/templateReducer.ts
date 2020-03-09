@@ -24,6 +24,9 @@ export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore 
         case Actions.LOAD_LOOKUP_LIST: {
             return{...state, listOpt: action.payload.listCombo};
         }
+        case Actions.LOAD_LOOKUP_FIELD: {
+            return{...state, fieldsTOpt: action.payload.fieldCombo};
+        }
         default: {return state;}            
     }
 };

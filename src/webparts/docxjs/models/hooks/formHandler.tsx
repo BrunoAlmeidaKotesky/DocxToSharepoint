@@ -6,23 +6,13 @@ import { stateCtx, dispatchCtx } from '../../components/DocxContext';
 import { loadAllLists, loadFieldFromList } from '../../services/SharepointServices';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { populateFieldTypeDdp, changeTemplateFieldType, populateLookUpList } from '../../redux/actions/actions';
+import { populateFieldTypeDdp, changeTemplateFieldType, populateLookUpList, populateLookUpField } from '../../redux/actions/actions';
 
 export const useTemplateHandle = (): ITemplateForm => {
-    const { templates, isEdit, comboOpt, listOpt } = useSelector((state: RootState) => state.templatesReducer);
+    const { templates, isEdit, comboOpt, listOpt , fieldsTOpt} = useSelector((state: RootState) => state.templatesReducer);
     const dispatch = useDispatch();
     const setState = useContext(dispatchCtx);
-    const [fieldLookUp, setLookUp] = React.useState([]);
     
-    const populateLookUpField = async (opt: IDropdownOption, field: string) => {
-        let { userFields, listName } = await loadFieldFromList(opt.text);
-        let comboField: IDropdownOption[] = [];
-        userFields.forEach(r => {
-            comboField.push({ key: r.InternalName, text: r.Title, data: { listName, field } });
-        });
-        setLookUp(comboField);
-    };
-
     const updateLookUp = (op: IDropdownOption, idx: string) => {
 
         templates.forEach((el, i) => {
@@ -62,8 +52,8 @@ export const useTemplateHandle = (): ITemplateForm => {
 
                 if (listOpt.length > 0) {
                     return (<>
-                        <Dropdown options={listOpt} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
-                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt, idx)} />}
+                        <Dropdown options={listOpt} onChanged={(opt) => dispatch(populateLookUpField(opt, fields.field))} />
+                        <Dropdown options={fieldsTOpt} onChanged={(opt) =>console.log(opt)} />
                     </>);
                 }
             }
@@ -74,8 +64,8 @@ export const useTemplateHandle = (): ITemplateForm => {
             if (fields.fieldType === FieldTypess.FLookUp) {
                 if (listOpt.length > 0) {
                     return (<>
-                        <Dropdown options={listOpt} onChanged={(opt) => populateLookUpField(opt, fields.field)} />
-                        {fieldLookUp.length > 0 && <Dropdown options={fieldLookUp} onChanged={(opt) => updateLookUp(opt, idx)} />}
+                        <Dropdown options={listOpt} onChanged={(opt) => dispatch(populateLookUpField(opt, fields.field))} />
+                        <Dropdown options={fieldsTOpt} onChanged={(opt) => console.log(opt)} />
                     </>);
                 }
             }

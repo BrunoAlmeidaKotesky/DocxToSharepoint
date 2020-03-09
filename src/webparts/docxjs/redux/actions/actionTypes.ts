@@ -1,13 +1,15 @@
 import { IDropdownOption } from 'office-ui-fabric-react';
 import { ITemplateField } from './../../models/interfaces/ITemplate';
 import {PopulateFieldTypes, ChangeType} from '../../models/types/types';
+import { Action } from 'redux';
 export enum Actions {
     POPULATE_LIST_TEMPLATE = 'POPULATE_LIST_TEMPLATE',
     CHANGE_ITEM_TYPE = 'CHANGE_ITEM_TYPE',
     SET_INITIAL_TEMPLATES = 'SET_INITIAL_TEMPLATES',
     RESET_STATE = 'RESET_STATE',
     LOAD_LOOKUP_LIST = 'LOAD_LOOKUP_LIST',
-    LOAD_LOOKUP_FIELD = 'LOAD_LOOKUP_FIELD'
+    LOAD_LOOKUP_FIELD = 'LOAD_LOOKUP_FIELD',
+    CHANGE_TEMPLATE_LOOKUP = 'CHANGE_TEMPLATE_LOOKUP'
 }
 
 interface FileHandler {
@@ -33,4 +35,9 @@ interface LoadLists {
   payload?: {listCombo: IDropdownOption[]};
 }
 
-export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile | LoadLists;
+interface LoadLookUp {
+  type: Actions.LOAD_LOOKUP_FIELD;
+  payload: {fieldCombo: IDropdownOption[]};
+}
+
+export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile | LoadLists | LoadLookUp;
