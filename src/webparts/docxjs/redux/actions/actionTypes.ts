@@ -10,7 +10,8 @@ export enum Actions {
     LOAD_LOOKUP_LIST = 'LOAD_LOOKUP_LIST',
     LOAD_LOOKUP_FIELD = 'LOAD_LOOKUP_FIELD',
     CHANGE_TEMPLATE_LOOKUP = 'CHANGE_TEMPLATE_LOOKUP',
-    SET_LOOKUP_VALUES = 'SET_LOOKUP_VALUES'
+    SET_LOOKUP_VALUES = 'SET_LOOKUP_VALUES',
+    SET_LOOKUP_LIST = 'SET_LOOKUP_LIST'
 }
 
 interface FileHandler {
@@ -46,4 +47,10 @@ interface SetLookUp {
   payload:  ITemplateField[];
 }
 
-export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType | ResetFile | LoadLists | LoadLookUp | SetLookUp;
+interface SetLookUpList {
+  type: Actions.SET_LOOKUP_LIST;
+  payload:{ listName:string, tempIdxField: string};
+}
+
+export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType |
+                              ResetFile | LoadLists | LoadLookUp | SetLookUp | SetLookUpList;

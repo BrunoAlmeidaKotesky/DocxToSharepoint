@@ -26,10 +26,12 @@ export function resetState(){
 
 const loadList = (listCombo: IDropdownOption[]) => action(Actions.LOAD_LOOKUP_LIST, {listCombo});
 const loadField = (fieldCombo: IDropdownOption[]) => action(Actions.LOAD_LOOKUP_FIELD, {fieldCombo});
+export const setLookUpList = ({listName, tempIdxField}:{listName:string, tempIdxField: string}):TemplateActions => action(Actions.SET_LOOKUP_LIST, {listName, tempIdxField});
 
 export function populateLookUpField(opt: IDropdownOption, field: string){
     return async (dispatch) => {
         let { userFields, listName } = await loadFieldFromList(opt.text);
+        await dispatch(setLookUpList({listName: listName, tempIdxField: field }));
         let fieldCombo: IDropdownOption[] = [];
         userFields.forEach(r => {
             fieldCombo.push({ key: r.InternalName, text: r.Title, data: { listName, field } });
