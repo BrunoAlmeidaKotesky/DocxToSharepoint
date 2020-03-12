@@ -10,7 +10,7 @@ declare global {
       __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
     }
   }
- export const initialState:IStore = {loaded: false, templates:[], comboOpt:[], listOpt: [], fieldsTOpt: [],isEdit: {edit: false, selectedIdx: undefined}};
+ export const initialState:IStore = {loaded: false, templates:[], comboOpt:[], listOpt: [], isEdit: {edit: false, selectedIdx: undefined}};
 
  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

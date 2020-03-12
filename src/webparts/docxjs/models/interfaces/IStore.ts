@@ -7,5 +7,4 @@ export interface IStore {
     readonly comboOpt: IDropdownOption[];
     readonly isEdit: { edit: boolean, selectedIdx: string };
     readonly listOpt: IDropdownOption[];
-    readonly fieldsTOpt: IDropdownOption[];
 }

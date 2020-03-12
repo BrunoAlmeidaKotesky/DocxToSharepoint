@@ -1,3 +1,4 @@
+import { RootState } from './../store';
 import { loadAllLists , loadFieldFromList} from './../../services/SharepointServices';
 import { IDropdownOption } from 'office-ui-fabric-react';
 import { TemplateActions, Actions } from './actionTypes';
@@ -6,7 +7,7 @@ import { ITemplateField, FieldTypess } from './../../models/interfaces/ITemplate
 import {action} from "typesafe-actions";
 import { ThunkDispatch } from 'redux-thunk';
 import { IListInfo } from '@pnp/sp/lists';
-import { IFieldInfo } from '@pnp/sp/fields';
+import { AnyAction } from 'redux';
 
 export function setInitialTemplate(template:ITemplateField[]):TemplateActions{
     return action(Actions.SET_INITIAL_TEMPLATES, template);

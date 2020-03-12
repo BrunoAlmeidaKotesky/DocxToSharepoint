@@ -2,7 +2,7 @@ import { TemplateActions, Actions } from './../actions/actionTypes';
 import { IStore } from './../../models/interfaces/IStore';
 import { initialState } from '../store';
 import { Reducer } from 'redux';
-//@ts-ignore
+
 export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore = initialState, action: TemplateActions) => {
     switch (action.type) {
         case Actions.SET_INITIAL_TEMPLATES: {
@@ -29,7 +29,8 @@ export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore 
         case Actions.LOAD_LOOKUP_FIELD: {
             return {
                 ...state, templates: state.templates.map(i =>
-                    i.field === action.payload.field ? { ...i, lookup: { allFields: action.payload.allFields, list: i.lookup.list, field: i.lookup.field } } : i
+                    i.field === action.payload.field ? { ...i, 
+                        lookup: { allFields: action.payload.allFields, list: i.lookup.list, field: i.lookup.field } } : i
                 )
             };
         }
