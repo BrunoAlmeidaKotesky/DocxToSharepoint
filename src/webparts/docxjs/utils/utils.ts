@@ -15,7 +15,7 @@ export function assertLookFieldValue(templates:ITemplateField[]) {
     enumResult = LookUpFieldStatus.NoLookUps;
     if (hasLookUp.length > 0) {
         hasLookUp.forEach(i => {
-            if (i.lookup.field === undefined || i.lookup.list === undefined)
+            if (i.lookup.field === null || i.lookup.list === null)
             enumResult = LookUpFieldStatus.NoValues;
             else enumResult = LookUpFieldStatus.HasValues;
         });

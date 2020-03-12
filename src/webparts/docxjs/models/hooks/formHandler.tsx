@@ -3,8 +3,7 @@ import { FieldTypess, ITemplateField, ITemplateForm } from '../interfaces/ITempl
 import { IDropdownOption, Text, Dropdown } from 'office-ui-fabric-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { populateFieldTypeDdp, changeTemplateFieldType, populateLookUpList, populateLookUpField, setLookUpList, setLookUpField } from '../../redux/actions/actions';
-import LookUpDdp from '../../components/LookUpDropDown';
+import { populateFieldTypeDdp, changeTemplateFieldType, populateLookUpList, populateLookUpField, setLookUpField } from '../../redux/actions/actions';
 
 export const useTemplateHandle = (): ITemplateForm => {
     const { templates, isEdit, comboOpt, listOpt, fieldsTOpt } = useSelector((state: RootState) => state.templatesReducer);
