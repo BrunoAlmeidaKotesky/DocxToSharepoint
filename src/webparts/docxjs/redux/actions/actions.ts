@@ -1,13 +1,10 @@
-import { RootState } from './../store';
 import { loadAllLists , loadFieldFromList} from './../../services/SharepointServices';
 import { IDropdownOption } from 'office-ui-fabric-react';
 import { TemplateActions, Actions } from './actionTypes';
 import {PopulateFieldTypes} from '../../models/types/types';
 import { ITemplateField, FieldTypess } from './../../models/interfaces/ITemplate';
 import {action} from "typesafe-actions";
-import { ThunkDispatch } from 'redux-thunk';
 import { IListInfo } from '@pnp/sp/lists';
-import { AnyAction } from 'redux';
 
 export function setInitialTemplate(template:ITemplateField[]):TemplateActions{
     return action(Actions.SET_INITIAL_TEMPLATES, template);
@@ -55,3 +52,6 @@ export function populateLookUpList(){
     };
 }
 
+export const createdListSucess =()=> action(Actions.CREATE_SUCCESS_LIST);
+export const failureListSucess =()=> action(Actions.CREATE_FAILURE_LIST);
+export const callSendList=()=> action(Actions.CREATE_CALL_LIST)
