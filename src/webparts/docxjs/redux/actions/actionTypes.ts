@@ -39,12 +39,12 @@ interface LoadLists {
 
 interface LoadLookUp {
   type: Actions.LOAD_LOOKUP_FIELD;
-  payload: {fieldCombo: IDropdownOption[]};
+  payload: {allFields: IDropdownOption[], field: string};
 }
 
 interface SetLookUp {
   type: Actions.SET_LOOKUP_VALUES;
-  payload:  ITemplateField[];
+  payload:  {fieldName: string, tempIdxField: string};
 }
 
 interface SetLookUpList {

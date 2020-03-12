@@ -25,18 +25,19 @@ export function resetState(){
 }
 
 const loadList = (listCombo: IDropdownOption[]) => action(Actions.LOAD_LOOKUP_LIST, {listCombo});
-const loadField = (fieldCombo: IDropdownOption[]) => action(Actions.LOAD_LOOKUP_FIELD, {fieldCombo});
+const loadField = (allFields: IDropdownOption[], field: string) => action(Actions.LOAD_LOOKUP_FIELD, {allFields, field});
 export const setLookUpList = ({listName, tempIdxField}:{listName:string, tempIdxField: string}):TemplateActions => action(Actions.SET_LOOKUP_LIST, {listName, tempIdxField});
+export const setLookUpField = ({fieldName, tempIdxField}:{fieldName:string, tempIdxField:string}):TemplateActions => action(Actions.SET_LOOKUP_VALUES, {fieldName, tempIdxField});
 
 export function populateLookUpField(opt: IDropdownOption, field: string){
     return async (dispatch) => {
         let { userFields, listName } = await loadFieldFromList(opt.text);
         await dispatch(setLookUpList({listName: listName, tempIdxField: field }));
-        let fieldCombo: IDropdownOption[] = [];
+        let allFields: IDropdownOption[] = [];
         userFields.forEach(r => {
-            fieldCombo.push({ key: r.InternalName, text: r.Title, data: { listName, field } });
+            allFields.push({ key: r.InternalName, text: r.Title, data: { listName, field } });
         });
-        return dispatch(loadField(fieldCombo));
+        return dispatch(loadField(allFields, field));
     };
 }
 
@@ -47,7 +48,7 @@ export function populateLookUpList(){
          let listCombo: IDropdownOption[] = [];
          lists.filter(l => {
              if (l.BaseType === 0 || l.BaseType === "GenericList")
-                 listCombo.push({ key: l.Id, text: l.Title });
+                 listCombo.push({ key: l.Title, text: l.Title });
          });
          return dispatch(loadList(listCombo));
     };

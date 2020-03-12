@@ -20,31 +20,31 @@ export function useTemplateGen(): ITemplateGen {
     function validateFieldType(field: string) {
         let fieldObj: ITemplateField;
         if (field.startsWith('t')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine, lookup: { field: null, list: null } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine, lookup: { field: null, list: null, allFields: [] } };
             return fieldObj;
         }
         else if (field.startsWith('n')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric, lookup: { field: null, list: null } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric, lookup: { field: null, list: null, allFields: [] } };
             return fieldObj;
         }
         else if (field.startsWith('$')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary, lookup: { field: null, list: null } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary, lookup: { field: null, list: null, allFields: [] } };
             return fieldObj;
         }
         else if (field.startsWith('c')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FLookUp, lookup: { field: null, list: null } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FLookUp, lookup: { field: null, list: null, allFields: [] } };
             return fieldObj;
         }
         else if (field.startsWith('e')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice, lookup: { field: null, list: null } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice, lookup: { field: null, list: null, allFields: [] } };
             return fieldObj;
         }
         else if (field.startsWith('d')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData, lookup: { field: null, list: null } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData, lookup: { field: null, list: null, allFields: [] } };
             return fieldObj;
         }
         else {
-            fieldObj = { field: field, fieldType: FieldTypess.FSingleLine };
+            fieldObj = { field: field, fieldType: FieldTypess.FSingleLine, lookup: { field: null, list: null, allFields: [] } };
             return fieldObj;
         }
     }

@@ -3,13 +3,12 @@ import { FieldTypess, ITemplateField, ITemplateForm } from '../interfaces/ITempl
 import { IDropdownOption, Text, Dropdown } from 'office-ui-fabric-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { populateFieldTypeDdp, changeTemplateFieldType, populateLookUpList, populateLookUpField, setLookUpList } from '../../redux/actions/actions';
+import { populateFieldTypeDdp, changeTemplateFieldType, populateLookUpList, populateLookUpField, setLookUpList, setLookUpField } from '../../redux/actions/actions';
 import LookUpDdp from '../../components/LookUpDropDown';
 
 export const useTemplateHandle = (): ITemplateForm => {
     const { templates, isEdit, comboOpt, listOpt, fieldsTOpt } = useSelector((state: RootState) => state.templatesReducer);
     const dispatch = useDispatch();
-    const [needsLookUp, setRefreshLookUp] = React.useState(true);
     const updateLookUp = (op: IDropdownOption, idx: string) => {
 
         templates.forEach((el, i) => {
@@ -34,21 +33,11 @@ export const useTemplateHandle = (): ITemplateForm => {
         dispatch(populateFieldTypeDdp({ idx: idx, option: actualOpt, isEditing: !isEdit.edit }));
     };
 
-    const handleCombosChange = (opt: string, ddpOpt: IDropdownOption) => {
-        dispatch(changeTemplateFieldType(opt, (ddpOpt.text as FieldTypess)))
-        if(ddpOpt.text === FieldTypess.FLookUp)
-            setRefreshLookUp(true);
-    };
+    const handleCombosChange = (opt: string, ddpOpt: IDropdownOption) => dispatch(changeTemplateFieldType(opt, (ddpOpt.text as FieldTypess)));
 
     React.useEffect(() => {
-        let hasLookUp = templates.every(i => {
-            if (i.fieldType === FieldTypess.FLookUp)
-                return true;
-        });
-        if (hasLookUp === true)
-             dispatch(populateLookUpList());
-             setRefreshLookUp(false);
-    }, [needsLookUp === true]);
+        dispatch(populateLookUpList());
+    }, []);
 
     const TemplateItems = (edit: boolean, idx: string, fields: ITemplateField): JSX.Element => {
         if (edit === false) {
@@ -56,8 +45,11 @@ export const useTemplateHandle = (): ITemplateForm => {
                 if (idx === fields.field) {
                     if (listOpt.length > 0) {
                         return (<>
-                            <Dropdown key={fields.field} options={listOpt} onChanged={(opt) => dispatch(populateLookUpField(opt, fields.field))} />
-                            <Dropdown key={fields.field} options={fieldsTOpt} onChanged={(opt) => console.log(opt)} />
+                            <Dropdown id={fields.field} key={fields.field} options={listOpt} defaultSelectedKey={fields.lookup?.list !== undefined && fields.lookup.list} onChanged={(opt) => dispatch(populateLookUpField(opt, fields.field))} />
+                            {fields.lookup.allFields.length > 0 &&
+                                <Dropdown key={fields.field} options={fields.lookup.allFields.length > 0 && fields.lookup.allFields}
+                                    defaultSelectedKey={fields.lookup?.field !== undefined && fields.lookup.field}
+                                    onChanged={(opt) => dispatch(setLookUpField({ fieldName: opt.key.toString(), tempIdxField: fields.field }))} />}
                         </>);
                     }
                 }
@@ -69,8 +61,11 @@ export const useTemplateHandle = (): ITemplateForm => {
             if (fields.fieldType === FieldTypess.FLookUp) {
                 if (listOpt.length > 0) {
                     return (<>
-                        <Dropdown key={fields.field} options={listOpt} onChanged={(opt) => dispatch(populateLookUpField(opt, fields.field))} />
-                        <Dropdown key={fields.field} options={fieldsTOpt} onChanged={(opt) => console.log(opt)} />
+                        <Dropdown id={fields.field} key={fields.field} options={listOpt} defaultSelectedKey={fields.lookup?.list !== undefined && fields.lookup.list} onChanged={(opt) => dispatch(populateLookUpField(opt, fields.field))} />
+                        {fields.lookup.allFields.length > 0 &&
+                            <Dropdown key={fields.field} options={fields.lookup.allFields.length > 0 && fields.lookup.allFields}
+                                defaultSelectedKey={fields.lookup?.field !== undefined && fields.lookup.field}
+                                onChanged={(opt) => dispatch(setLookUpField({ fieldName: opt.key.toString(), tempIdxField: fields.field }))} />}
                     </>);
                 }
             }

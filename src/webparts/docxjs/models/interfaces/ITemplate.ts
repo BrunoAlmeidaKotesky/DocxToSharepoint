@@ -5,7 +5,7 @@ export interface ITemplateField {
    readonly field: string;
     fieldType: FieldTypess; 
    readonly choice?: {choices: any[], type: ChoiceFieldFormatType};
-   readonly lookup?: {list: string, field: string};
+   readonly lookup?: {list: string, field: string, allFields?: IDropdownOption[]};
 }
 
 export interface ITemplateGen {
