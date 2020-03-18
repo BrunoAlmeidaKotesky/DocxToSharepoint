@@ -2,7 +2,7 @@ import { TemplateActions, Actions } from './../actions/actionTypes';
 import { IStore } from './../../models/interfaces/IStore';
 import { initialState } from '../store';
 import { Reducer } from 'redux';
-
+//@ts-ignore
 export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore = initialState, action: TemplateActions) => {
     switch (action.type) {
         case Actions.SET_INITIAL_TEMPLATES: {
@@ -53,14 +53,14 @@ export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore 
         case Actions.CHANGE_CHOICE_TYPE: {
             return {...state, templates: state.templates.map((t,n) =>
                     t.field === action.payload.fieldIdx ? {...t,
-                        choices: {choices: state.templates[n].choice.choices, type: action.payload.type}
+                        choice: {choices: state.templates[n].choice.choices, type: action.payload.type}
                     }:t
                 )};
         }
         case Actions.CHANGE_CHOICE_OPTIONS: {
             return {...state, templates: state.templates.map((t,n) =>
                     t.field === action.payload.fieldIdx ? {...t,
-                    choices: {choices: [...state.templates[n].choice.choices, action.payload.options], type: state.templates[n].choice.type}}:t
+                    choice: {choices: action.payload.options, type: state.templates[n].choice.type}}:t
                 )};
         }
         default: { return state; }

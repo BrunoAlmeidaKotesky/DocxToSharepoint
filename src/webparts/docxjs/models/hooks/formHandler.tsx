@@ -45,11 +45,13 @@ export const useTemplateHandle = (): ITemplateForm => {
                     }
                 }
                 case FieldTypess.FChoice: {
+                    if (idx === fields.field) {
                     return (<>
                         <Dropdown key={fields.field} id={fields.field} options={choicesFieldOpt} 
                                   onChanged={(opt) =>dispatch(changeChoiceType({fieldIdx: fields.field, type: (opt.key as ChoiceFieldFormatType)}))}/>
                         <TextField onChange={(e) => handleChoiceOptChange(e,fields.field)}/>
                     </>);
+                    }
                 }
                 default: return <Text id={fields.field} nowrap variant="mediumPlus">{fields.fieldType}</Text>;
             }
@@ -70,11 +72,13 @@ export const useTemplateHandle = (): ITemplateForm => {
                     }
                 }
                 case FieldTypess.FChoice: {
-                    return (<>
-                        <Dropdown key={fields.field} id={fields.field} options={choicesFieldOpt} 
-                                  onChanged={(opt) =>dispatch(changeChoiceType({fieldIdx: fields.field, type: (opt.key as ChoiceFieldFormatType)}))}/>
-                        <TextField onChange={(e) => handleChoiceOptChange(e,fields.field)}/>
-                    </>);
+                    if (idx === fields.field) {
+                        return (<>
+                            <Dropdown key={fields.field} id={fields.field} options={choicesFieldOpt} 
+                                      onChanged={(opt) =>dispatch(changeChoiceType({fieldIdx: fields.field, type: (opt.key as ChoiceFieldFormatType)}))}/>
+                            <TextField onChange={(e) => handleChoiceOptChange(e,fields.field)}/>
+                        </>);
+                        }
                 }
                 default: return <Dropdown id={fields.field} options={comboOpt} 
                                           onChanged={(opt) => handleCombosChange(fields.field, opt)} defaultSelectedKey={fields.fieldType} />;
