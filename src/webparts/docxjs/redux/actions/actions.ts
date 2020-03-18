@@ -18,7 +18,8 @@ export function populateFieldTypeDdp({idx, isEditing}:Pick<PopulateFieldTypes, '
         { key: FieldTypess.FData, text: "Data", selected: true },
         { key: FieldTypess.FNumeric, text: "Num", selected: true },
         { key: FieldTypess.FLookUp, text: "LookUp", selected: true },
-        { key: FieldTypess.FChoice, text: "Escolha", selected: true}
+        { key: FieldTypess.FChoice, text: "Escolha", selected: true},
+        { key: FieldTypess.FBool, text: "Sim/Não", selected: true}
     ];
     return action(Actions.POPULATE_LIST_TEMPLATE, {idx, isEditing, option});
 }

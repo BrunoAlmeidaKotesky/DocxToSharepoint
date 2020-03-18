@@ -26,5 +26,6 @@ export enum FieldTypess {
     FMonetary = 'Moeda',
     FLookUp = 'LookUp',
     FChoice = 'Escolha',
-    FData = 'Data'
+    FData = 'Data',
+    FBool = 'Sim/Não'
 }
