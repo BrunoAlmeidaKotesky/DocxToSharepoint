@@ -22,3 +22,9 @@ export function assertLookFieldValue(templates:ITemplateField[]) {
     }
     return enumResult;
 }
+
+export function splitString(str:string){
+    let allString = str.trim();
+    let options = allString.split(',').map(i => i.trim());
+    return options;
+}

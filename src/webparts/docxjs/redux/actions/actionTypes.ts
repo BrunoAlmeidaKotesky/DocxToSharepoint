@@ -2,6 +2,7 @@ import { IDropdownOption } from 'office-ui-fabric-react';
 import { ITemplateField } from './../../models/interfaces/ITemplate';
 import {PopulateFieldTypes, ChangeType} from '../../models/types/types';
 import { Action } from 'redux';
+import { ChoiceFieldFormatType } from '@pnp/sp/fields';
 export enum Actions {
     POPULATE_LIST_TEMPLATE = 'POPULATE_LIST_TEMPLATE',
     CHANGE_ITEM_TYPE = 'CHANGE_ITEM_TYPE',
@@ -14,7 +15,9 @@ export enum Actions {
     SET_LOOKUP_LIST = 'SET_LOOKUP_LIST',
     CREATE_SUCCESS_LIST = 'CREATE_SUCCESS_LIST',
     CREATE_FAILURE_LIST = 'CREATE_FAILURE_LIST',
-    CREATE_CALL_LIST = 'CREATE_CALL_LIST'
+    CREATE_CALL_LIST = 'CREATE_CALL_LIST',
+    CHANGE_CHOICE_TYPE = 'CHANGE_CHOICE_TYPE',
+    CHANGE_CHOICE_OPTIONS = 'CHANGE_CHOICE_OPTIONS'
 }
 
 interface FileHandler {
@@ -55,5 +58,15 @@ interface SetLookUpList {
   payload:{ listName:string, tempIdxField: string};
 }
 
+interface SetChoiceType{
+  type: Actions.CHANGE_CHOICE_TYPE;
+  payload: {fieldIdx: string , type:ChoiceFieldFormatType};
+}
+interface SetChoiceChoices {
+  type: Actions.CHANGE_CHOICE_OPTIONS;
+  payload: { options: string[], fieldIdx:string};
+}
+
 export type TemplateActions = PopulateTemplate | FileHandler | ChangeTemplateType |
-                              ResetFile | LoadLists | LoadLookUp | SetLookUp | SetLookUpList;
+                              ResetFile | LoadLists | LoadLookUp | SetLookUp |
+                              SetLookUpList | SetChoiceType | SetChoiceChoices;

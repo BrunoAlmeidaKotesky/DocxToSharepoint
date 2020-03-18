@@ -28,9 +28,9 @@ export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore 
         }
         case Actions.LOAD_LOOKUP_FIELD: {
             return {
-                ...state, templates: state.templates.map(i =>
+                ...state, templates: state.templates.map((i,n) =>
                     i.field === action.payload.field ? { ...i, 
-                        lookup: { allFields: action.payload.allFields, list: i.lookup.list, field: i.lookup.field } } : i
+                        lookup: { allFields: action.payload.allFields, list: i.lookup.list, field: i.lookup.field }} : i
                 )
             };
         }
@@ -38,17 +38,30 @@ export const templateReducer: Reducer<IStore, TemplateActions> = (state: IStore 
             return {
                 ...state, templates: state.templates.map((i, n) =>
                     i.field === action.payload.tempIdxField ? { ...i, 
-                        lookup: { field: null, list: action.payload.listName,  allFields: state.templates[n].lookup.allFields } } : i
+                        lookup: { field: null, list: action.payload.listName,  allFields: state.templates[n].lookup.allFields }} : i
                 )
             };
         }
         case Actions.SET_LOOKUP_VALUES: {
             return {
                 ...state, templates: state.templates.map((t, i) =>
-                    t.field === action.payload.tempIdxField ? { ...t, lookup: 
-                        { field: action.payload.fieldName, list: t.lookup.list, allFields: state.templates[i].lookup.allFields } } : t
+                    t.field === action.payload.tempIdxField ? { ...t, 
+                        lookup: { field: action.payload.fieldName, list: t.lookup.list, allFields: state.templates[i].lookup.allFields } } : t
                 )
             };
+        }
+        case Actions.CHANGE_CHOICE_TYPE: {
+            return {...state, templates: state.templates.map((t,n) =>
+                    t.field === action.payload.fieldIdx ? {...t,
+                        choices: {choices: state.templates[n].choice.choices, type: action.payload.type}
+                    }:t
+                )};
+        }
+        case Actions.CHANGE_CHOICE_OPTIONS: {
+            return {...state, templates: state.templates.map((t,n) =>
+                    t.field === action.payload.fieldIdx ? {...t,
+                    choices: {choices: [...state.templates[n].choice.choices, action.payload.options], type: state.templates[n].choice.type}}:t
+                )};
         }
         default: { return state; }
     }

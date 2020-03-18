@@ -8,6 +8,7 @@ import { createList, addFields } from '../../services/SharepointServices';
 import {assertLookFieldValue, LookUpFieldStatus} from '../../utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {setInitialTemplate, resetState} from '../../redux/actions/actions';
+import { ChoiceFieldFormatType } from '@pnp/sp/fields';
 
 let iModule = InspectModule();
 
@@ -20,31 +21,45 @@ export function useTemplateGen(): ITemplateGen {
     function validateFieldType(field: string) {
         let fieldObj: ITemplateField;
         if (field.startsWith('t')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine, lookup: { field: null, list: null, allFields: [] } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine, 
+                         lookup: { field: null, list: null, allFields: [] },
+                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('n')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric, lookup: { field: null, list: null, allFields: [] } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric, 
+                         lookup: { field: null, list: null, allFields: [] },
+                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('$')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary, lookup: { field: null, list: null, allFields: [] } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary, 
+                         lookup: { field: null, list: null, allFields: [] },
+                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('c')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FLookUp, lookup: { field: null, list: null, allFields: [] } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FLookUp, 
+                         lookup: { field: null, list: null, allFields: [] },
+                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('e')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice, lookup: { field: null, list: null, allFields: [] } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice, 
+                         lookup: { field: null, list: null, allFields: [] },
+                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('d')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData, lookup: { field: null, list: null, allFields: [] } };
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData, 
+                         lookup: { field: null, list: null, allFields: [] },
+                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
             return fieldObj;
         }
         else {
-            fieldObj = { field: field, fieldType: FieldTypess.FSingleLine, lookup: { field: null, list: null, allFields: [] } };
+            fieldObj = { field: field, fieldType: FieldTypess.FSingleLine, 
+                         lookup: { field: null, list: null, allFields: [] },
+                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
             return fieldObj;
         }
     }

@@ -5,12 +5,21 @@ import {PopulateFieldTypes} from '../../models/types/types';
 import { ITemplateField, FieldTypess } from './../../models/interfaces/ITemplate';
 import {action} from "typesafe-actions";
 import { IListInfo } from '@pnp/sp/lists';
+import { ChoiceFieldFormatType } from '@pnp/sp/fields';
 
 export function setInitialTemplate(template:ITemplateField[]):TemplateActions{
     return action(Actions.SET_INITIAL_TEMPLATES, template);
 }
 
-export function populateFieldTypeDdp({idx, isEditing, option}:PopulateFieldTypes){
+export function populateFieldTypeDdp({idx, isEditing}:Pick<PopulateFieldTypes, 'isEditing'|'idx'>){
+    const option: IDropdownOption[] = [
+        { key: FieldTypess.FSingleLine, text: "Texto", selected: true },
+        { key: FieldTypess.FMonetary, text: "Moeda", selected: true },
+        { key: FieldTypess.FData, text: "Data", selected: true },
+        { key: FieldTypess.FNumeric, text: "Num", selected: true },
+        { key: FieldTypess.FLookUp, text: "LookUp", selected: true },
+        { key: FieldTypess.FChoice, text: "Escolha", selected: true}
+    ];
     return action(Actions.POPULATE_LIST_TEMPLATE, {idx, isEditing, option});
 }
 
@@ -52,6 +61,13 @@ export function populateLookUpList(){
     };
 }
 
+export function changeChoiceType({type, fieldIdx}:{type: ChoiceFieldFormatType, fieldIdx:string}):TemplateActions{
+    return action(Actions.CHANGE_CHOICE_TYPE, {type, fieldIdx});
+}
+export function changeChoiceOptions({options, fieldIdx}:{options: string[], fieldIdx:string}):TemplateActions{
+    return action(Actions.CHANGE_CHOICE_OPTIONS, {options, fieldIdx});
+}
+
 export const createdListSucess =()=> action(Actions.CREATE_SUCCESS_LIST);
 export const failureListSucess =()=> action(Actions.CREATE_FAILURE_LIST);
-export const callSendList=()=> action(Actions.CREATE_CALL_LIST)
+export const callSendList=()=> action(Actions.CREATE_CALL_LIST);

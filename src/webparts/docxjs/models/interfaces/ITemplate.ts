@@ -3,8 +3,8 @@ import { ChoiceFieldFormatType} from "@pnp/sp/fields";
 
 export interface ITemplateField {
    readonly field: string;
-    fieldType: FieldTypess; 
-   readonly choice?: {choices: any[], type: ChoiceFieldFormatType};
+   readonly fieldType: FieldTypess; 
+   readonly choice?: {choices: string[], type: ChoiceFieldFormatType};
    readonly lookup?: {list: string, field: string, allFields?: IDropdownOption[]};
 }
 

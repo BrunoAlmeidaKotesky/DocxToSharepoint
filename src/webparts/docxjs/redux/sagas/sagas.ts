@@ -3,11 +3,12 @@ import {call, put, select} from 'redux-saga/effects';
 import { assertLookFieldValue, LookUpFieldStatus } from '../../utils/utils';
 import {createList, addFields} from '../../services/SharepointServices';
 import { RootState } from '../store';
-import {createdListSucess, failureListSucess} from '../actions/actions';
+import {createdListSucess, failureListSucess, callSendList} from '../actions/actions';
 
 export function* sendList(listName: string){
     try {
         const templates:ITemplateField[] = yield select((state: RootState) => state.templatesReducer.templates);
+        yield put(callSendList());
         const canUpload = assertLookFieldValue(templates);
         if (canUpload === LookUpFieldStatus.NoLookUps) {
             yield call(createList, listName);
