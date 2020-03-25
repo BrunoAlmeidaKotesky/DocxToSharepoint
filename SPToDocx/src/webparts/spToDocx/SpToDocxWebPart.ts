@@ -8,18 +8,28 @@ import {
 } from '@microsoft/sp-property-pane';
 
 import * as strings from 'SpToDocxWebPartStrings';
-import SpToDocx from './components/SpToDocx';
+import DocumentCreator from './components/Context';
 import { ISpToDocxProps } from './components/ISpToDocxProps';
+import { PageContext } from '@microsoft/sp-page-context';
+import { sp } from "@pnp/sp";
 
 export interface ISpToDocxWebPartProps {
   description: string;
+  pageCtx: PageContext;
 }
 
 export default class SpToDocxWebPart extends BaseClientSideWebPart<ISpToDocxWebPartProps> {
-
+  
+  public async onInit(): Promise<void> {
+    await super.onInit();
+    sp.setup({
+      spfxContext: this.context
+    });
+  }
+  
   public render(): void {
     const element: React.ReactElement<ISpToDocxProps > = React.createElement(
-      SpToDocx,
+      DocumentCreator,
       {
         description: this.properties.description
       }
