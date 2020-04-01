@@ -1,20 +1,23 @@
-import {Panel, TextField, Dropdown, } from 'office-ui-fabric-react';
+import {Panel, TextField, Dropdown, IDropdownOption} from 'office-ui-fabric-react';
 import * as React from 'react';
 import { useConstCallback } from '@uifabric/react-hooks';
 import { modalCtx, dispatchCtx } from './Context';
+import {setModal} from '../models/redux/actions/actions';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../models/redux/store';
 
-export default function ListModal(){
-
-  const isOpen = React.useContext(modalCtx);
-  const setIsOpen = React.useContext(dispatchCtx);
-  const dismissPanel = useConstCallback(() => setIsOpen(false));
-
+function ListModal(){
+  const dispatch = useDispatch();
+  const {isModalOpened, list} = useSelector((state:RootState)=>state.listReducer);
+  const dismisModal = () => dispatch(setModal(false));
+  const headerText = `Lista: ${list.listName}`;
     return(<Panel
-        isOpen={isOpen}
+        isOpen={isModalOpened}
         closeButtonAriaLabel="Close"
+        forceFocusInsideTrap={false}
         isHiddenOnDismiss={true}
-        headerText="Lista: Hidden on dismiss"
-        onDismiss={dismissPanel}
+        headerText={headerText}
+        onDismiss={dismisModal}
       >
         <div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. 
@@ -24,3 +27,5 @@ export default function ListModal(){
         </div>
       </Panel>);
 }
+
+export default React.memo(ListModal);

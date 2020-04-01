@@ -9,7 +9,7 @@ declare global {
       __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
     }
   }
-export const initialState:IStore = {list: {listId: null, listName: null, fields: []}, loaded:false};
+export const initialState:IStore = {list: {listId: null, listName: null, fields: []}, isModalOpened:false, allLists:[]};
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({

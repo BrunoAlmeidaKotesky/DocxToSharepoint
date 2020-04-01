@@ -14,7 +14,7 @@ export default function DocumentCreator(props: Props):JSX.Element{
     return(<Provider store={store()}>
              <modalCtx.Provider value={isOpen}>
               <dispatchCtx.Provider value={setIsOpen}>
-             <SpToDocx {...props}/>
+               <SpToDocx {...props}/>
              </dispatchCtx.Provider>
              </modalCtx.Provider>
           </Provider>);
