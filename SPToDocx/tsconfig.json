@@ -40,7 +40,7 @@
     ]
   },
   "include": [
-    "src/**/*.ts", "src/webparts/docxjs/models/docxGenerator.tsx", "src/webparts/docxjs/models/hooks/formHandler.tsx"
+    "src/**/*.ts", "src/webparts/docxjs/models/docxGenerator.tsx", "src/webparts/docxjs/models/hooks/formHandler.tsx", "src/webparts/spToDocx/models/hooks/useFieldGenerator.tsx"
   ],
   "exclude": [
     "node_modules",
