@@ -1,22 +1,12 @@
-import {Panel, TextField, Dropdown, IDropdownOption, Spinner} from 'office-ui-fabric-react';
 import * as React from 'react';
-import {setModal, setSelectedFields, clearListFields} from '../models/redux/actions/actions';
-import { useSelector, useDispatch } from 'react-redux';
+import {Panel, Spinner} from 'office-ui-fabric-react';
+import {useSelector} from 'react-redux';
 import { RootState } from '../models/redux/store';
+import useFieldsGen from '../models/hooks/useFieldGenerator';
 
 function ListModal(){
-  const dispatch = useDispatch();
-  const {isModalOpened, list} = useSelector((state:RootState)=>state.listReducer);
-  const dismisModal = () => {
-          dispatch(setModal(false));
-          dispatch(clearListFields());
-        };
-  const headerText = `Lista: ${list.listName}`;
-
-  React.useEffect(()=>{
-    if(list.listId !== null && isModalOpened === true)
-      dispatch(setSelectedFields(list.listId));
-  },[isModalOpened]);
+  const { isModalOpened, list: { fields } } = useSelector((store: RootState) => store.listReducer);
+  const {dismisModal, headerText, renderFields} = useFieldsGen();
 
     return(<Panel
         isOpen={isModalOpened}
@@ -29,8 +19,8 @@ function ListModal(){
         <div>
           <br />
           <br />
-          {list.fields.length > 0 ? <>
-            <TextField ariaLabel={'Lorem ipsum dolor sit amet consectetur adipisicing elit.'} />
+          {fields.length > 0 ? 
+          <>{fields.map((it, n) => renderFields(it, n))}        
           </>:<Spinner size={3} label="Carregando campos..."/>}
         </div>
       </Panel>);

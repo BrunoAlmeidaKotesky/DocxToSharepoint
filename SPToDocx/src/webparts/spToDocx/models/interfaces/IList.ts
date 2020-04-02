@@ -1,13 +1,7 @@
 
-import {IFieldInfo} from '@pnp/sp/fields';
+import { IFieldContent } from './IUseFieldGen';
 export interface IList {
     listId: string;
     listName: string;
-    fields: IFields[];
-}
-
-export interface IFields {
-    fieldName: string;
-    fieldId: string;
-    fieldType: IFieldInfo;
+    fields: IFieldContent[];
 }

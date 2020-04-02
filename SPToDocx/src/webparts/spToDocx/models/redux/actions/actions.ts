@@ -1,5 +1,5 @@
+import { IFieldContent } from './../../interfaces/IUseFieldGen';
 import { RootState } from './../store';
-import { IFieldInfo } from '@pnp/sp/fields';
 import { IDropdownOption } from 'office-ui-fabric-react';
 import { IListInfo } from '@pnp/sp/lists';
 import {loadAllLists, loadFieldsFromList} from '../../../services/SharepointServices';
@@ -29,10 +29,10 @@ export function populateListOptions(){
     };
 }
 
-const setFieldsFromList = (fields:IFieldInfo[]) => action(Actions.SET_FIELDS_FROM_LIST, fields);
+const setFieldsFromList = (fields:IFieldContent[]) => action(Actions.SET_FIELDS_FROM_LIST, fields);
 export function setSelectedFields(listId:string){
-    return async (dispatch, getState?:()=>RootState):Promise<IFieldInfo[]> => {
-        let fields:IFieldInfo[];
+    return async (dispatch, getState?:()=>RootState):Promise<IFieldContent[]> => {
+        let fields:IFieldContent[];
         fields = await loadFieldsFromList(listId);
         
         return dispatch(setFieldsFromList(fields));
