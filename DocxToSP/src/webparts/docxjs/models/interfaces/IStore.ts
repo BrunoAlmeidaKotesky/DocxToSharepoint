@@ -8,3 +8,9 @@ export interface IStore {
     readonly isEdit: { edit: boolean, selectedIdx: string };
     readonly listOpt: IDropdownOption[];
 }
+
+export interface IFileSave{
+    listName: string;
+    listId: string;
+    file:File;
+}

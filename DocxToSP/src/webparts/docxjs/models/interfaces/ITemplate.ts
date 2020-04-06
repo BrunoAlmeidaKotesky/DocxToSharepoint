@@ -1,13 +1,11 @@
-import { ChoiceFieldFormatType } from '@pnp/sp/fields';
 import { IDropdownOption } from 'office-ui-fabric-react';
 
 export interface ITemplateField {
    readonly field: string;
    readonly fieldType: FieldTypess; 
-   readonly choice?: {choices: string[], type: ChoiceFieldType | ChoiceFieldFormatType};
+   readonly choice?: {choices: string[], type: 0|1|2};
    readonly lookup?: {list: string, field: string, allFields?: IDropdownOption[]};
 }
-
 export interface ITemplateGen {
     handleFile(e: React.ChangeEvent<HTMLInputElement>): void;
     sendFields(listName: string): Promise<void>;

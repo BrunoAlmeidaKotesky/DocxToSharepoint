@@ -4,17 +4,20 @@ import * as React from 'react';
 import Docxtemplater from 'docxtemplater';
 let InspectModule = require('docxtemplater/js/inspect-module');
 import { ITemplateField, FieldTypess, ITemplateGen } from '../interfaces/ITemplate';
-import { createList, addFields } from '../../services/SharepointServices';
+import { createList, addFields,uploadFile } from '../../services/SharepointServices';
 import {assertLookFieldValue, LookUpFieldStatus} from '../../utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {setInitialTemplate, resetState} from '../../redux/actions/actions';
-import { ChoiceFieldFormatType } from '@pnp/sp/fields';
+import {setInitFile} from '../../redux/actions/fileActions';
+import { ChoiceFieldType } from './../interfaces/ITemplate';
 
 let iModule = InspectModule();
 
 export function useTemplateGen(): ITemplateGen {
     const dispatch = useDispatch();
     const templates = useSelector((state:RootState) => state.templatesReducer.templates);
+    const fileProp = useSelector((state:RootState) => state.fileReducer);
+
     const [isFirstFile, setFileOrder] = React.useState(0);
     const ref = React.useRef<HTMLInputElement>(undefined);
 
@@ -23,43 +26,43 @@ export function useTemplateGen(): ITemplateGen {
         if (field.startsWith('t')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine, 
                          lookup: { field: null, list: null, allFields: [] },
-                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
+                         choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('n')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric, 
                          lookup: { field: null, list: null, allFields: [] },
-                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
+                         choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('$')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary, 
                          lookup: { field: null, list: null, allFields: [] },
-                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
+                         choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('c')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FLookUp, 
                          lookup: { field: null, list: null, allFields: [] },
-                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
+                         choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('e')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice, 
                          lookup: { field: null, list: null, allFields: [] },
-                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
+                         choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('d')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData, 
                          lookup: { field: null, list: null, allFields: [] },
-                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
+                         choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else {
             fieldObj = { field: field, fieldType: FieldTypess.FSingleLine, 
                          lookup: { field: null, list: null, allFields: [] },
-                         choice: { choices: [], type: ChoiceFieldFormatType.Dropdown}};
+                         choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
     }
@@ -91,6 +94,7 @@ export function useTemplateGen(): ITemplateGen {
                 let doc = new Docxtemplater().loadZip(zip);
                 let fieldsToSharePoint = await getFileTags(doc);
                 dispatch(setInitialTemplate(fieldsToSharePoint));
+                dispatch(setInitFile(file));
                 fieldsToSharePoint = [];
                 ref.current.value = '';
                 setFileOrder(1);
@@ -103,15 +107,21 @@ export function useTemplateGen(): ITemplateGen {
         try {
             const canUpload = assertLookFieldValue(templates);
             if (canUpload === LookUpFieldStatus.NoLookUps) {
-                await createList(listName);
+                let listId =  await createList(listName);
+
                 await addFields(listName, templates);
+                let updateRes = await uploadFile({listName, listId, file: fileProp.file});
+                console.log(updateRes);
             }
             else if (canUpload === LookUpFieldStatus.NoValues) {
                 console.log('Não pode fazer upload porque tem lookup sem valores');
             }
             else if (canUpload === LookUpFieldStatus.HasValues) {
-                await createList(listName);
+                let listId =  await createList(listName);
+
                 await addFields(listName, templates);
+                let updateRes = await uploadFile({listName, listId, file:fileProp.file});
+                console.log(updateRes);
             }
 
         } catch (e) {
