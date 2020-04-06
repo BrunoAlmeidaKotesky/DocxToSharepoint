@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Panel, Spinner} from 'office-ui-fabric-react';
+import {Panel, Spinner, DefaultButton} from 'office-ui-fabric-react';
 import {useSelector} from 'react-redux';
 import { RootState } from '../models/redux/store';
 import useFieldsGen from '../models/hooks/useFieldGenerator';
@@ -23,6 +23,7 @@ function ListModal(){
           <>{fields.map((it, n) => renderFields(it, n))}        
           </>:<Spinner size={3} label="Carregando campos..."/>}
         </div>
+        <DefaultButton onClick={()=>''}/>
       </Panel>);
 }
 

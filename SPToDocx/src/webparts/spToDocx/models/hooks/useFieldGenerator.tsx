@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Dropdown, TextField ,Toggle, IDropdownOption} from 'office-ui-fabric-react';
+import { Dropdown, TextField, Toggle, IDropdownOption, DatePicker, IChoiceGroupOption, ChoiceGroup } from 'office-ui-fabric-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { FieldTypes } from '@pnp/sp/fields';
 import { setModal, setSelectedFields, clearListFields } from '../redux/actions/actions';
 import { IUseFieldGen, IFieldContent } from '../interfaces/IUseFieldGen';
+import { DayPicker, formatDate, getFieldFormat } from '../../utils/constants';
+import { RInput } from '../types/types';
 
-
-export default function useFieldGen():IUseFieldGen {
+export default function useFieldGen(): IUseFieldGen {
     const { isModalOpened, list: { listId, listName } } = useSelector((store: RootState) => store.listReducer);
+    const [numberVal, setNumVal] = React.useState<string>('');
     const dispatch = useDispatch();
     const headerText = `Lista: ${listName}`;
 
@@ -22,37 +24,54 @@ export default function useFieldGen():IUseFieldGen {
             dispatch(setSelectedFields(listId));
     }, [isModalOpened]);
 
-    function renderFields(field: IFieldContent, idx:number):JSX.Element {
+    function renderFields(field: IFieldContent, idx: number): JSX.Element {
         console.log(field);
-        switch(field.FieldTypeKind) {
+
+        switch (field.FieldTypeKind) {
             case FieldTypes.Boolean:
                 return (<><label>{field.Title}</label>
-                         <Toggle defaultChecked={false} id={field.InternalName} onText={'Sim'} offText={'Não'}/></>);
+                    <Toggle defaultChecked={false} id={field.InternalName} onText={'Sim'} offText={'Não'} /></>);
             case FieldTypes.Text:
                 return (<><label>{field.Title}</label>
-                        <TextField id={field.InternalName}/></>);
+                    <TextField id={field.InternalName} /></>);
             case FieldTypes.Note:
-                return(<><label>{field.Title}</label>
-                        <TextField id={field.InternalName} multiline resizable={false}/></>);
+                return (<><label>{field.Title}</label>
+                    <TextField id={field.InternalName} multiline resizable={false} /></>);
             case FieldTypes.Number:
-                return(<><label>{field.Title}</label>
-                         <TextField id={field.InternalName}/></>);
-            case FieldTypes.Choice:{
-                const choices: IDropdownOption[] = [];
-                field.Choices.forEach((text, index) => choices.push({key: index, text: text}));
-                return(<><label>{field.Title}</label>
-                    <Dropdown options={choices}/></>);
+                return (<><label>{field.Title}</label>
+                    <TextField id={field.InternalName} defaultValue={numberVal}/></>);
+            
+            case FieldTypes.Choice: {
+                let formatType = getFieldFormat(field.SchemaXml, 'Format');
+                if(formatType === "Dropdown"){
+                    const choices: IDropdownOption[] = [];
+                    field.Choices.forEach((text, index) => choices.push({ key: index, text: text }));
+                    return (<><label>{field.Title}</label>
+                        <Dropdown options={choices} /></>);
+                }
+                if(formatType === "RadioButtons"){
+                    const groups: IChoiceGroupOption[]=[];
+                    field.Choices.forEach((text,index) => groups.push({key: index.toString(), text: text}));
+                    return(<><label>{field.Title}</label>
+                             <ChoiceGroup options={groups}/></>);
+                }
             }
             case FieldTypes.MultiChoice: {
-                const multiChoices:IDropdownOption[]=[];
-                field.Choices.forEach((text, index) => multiChoices.push({key: index, text: text}));
-                return(<><label>{field.Title}</label>
-                    <Dropdown options={multiChoices} multiSelect/></>);
+                const multiChoices: IDropdownOption[] = [];
+                field.Choices.forEach((text, index) => multiChoices.push({ key: index, text: text }));
+                return (<><label>{field.Title}</label>
+                    <Dropdown options={multiChoices} multiSelect /></>);
             }
-            case FieldTypes.DateTime: return;
+            case FieldTypes.DateTime:{
+                return (<><label>{field.Title}</label>
+                    <DatePicker isRequired={true} allowTextInput={true} strings={DayPicker}
+                        formatDate={formatDate} 
+                        onSelectDate={(date)=>{console.log(date);}}/></>);
+            }
                 
+
         }
     }
 
-    return {headerText, dismisModal, renderFields};
+    return { headerText, dismisModal, renderFields };
 }
