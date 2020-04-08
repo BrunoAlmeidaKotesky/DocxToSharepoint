@@ -1,4 +1,4 @@
-import { IFileSave } from './../models/interfaces/IStore';
+import { IFileSave, IDocxFile } from './../models/interfaces/IStore';
 import { ITemplateField, FieldTypess, ChoiceFieldType } from '../models/interfaces/ITemplate';
 import { sp } from "@pnp/sp";
 import "@pnp/sp/webs";
@@ -93,12 +93,16 @@ export const loadFieldFromList = async (listName:string) => {
     return {userFields, listName};
 };
 
-export const uploadFile = async ({listName, file, listId}: IFileSave) =>{
-
+async function urlToFile(file:IDocxFile):Promise<File>{
     const fileBlob = await  fetch(file.fileUrl).then(r=> r.blob());
     const fileObj = await new File([fileBlob], file.fileName, {type: file.type});
+    return fileObj;
+}
 
-    console.log(fileObj);
+export const uploadFile = async ({listName, file, listId}: IFileSave) =>{
+
+   const fileObj = await urlToFile(file);
+
    try{
     let fileAdd = await sp.web.getFolderByServerRelativeUrl('Templates').files.add(fileObj.name, fileObj);
     let fileData = await fileAdd.file.getItem();
