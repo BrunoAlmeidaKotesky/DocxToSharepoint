@@ -84,8 +84,13 @@ export function useTemplateGen(): ITemplateGen {
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file: File = (<HTMLInputElement>e.target).files[0];
-        const reader = new FileReader();
+        console.log(file);
+        const fileName = file.name;
+        const type = file.type;
+        const fileUrl = URL.createObjectURL(file);
 
+        const reader = new FileReader();
+        
         reader.onload = async () => {
             if(isFirstFile === 1){
                 dispatch(resetState());
@@ -94,7 +99,7 @@ export function useTemplateGen(): ITemplateGen {
                 let doc = new Docxtemplater().loadZip(zip);
                 let fieldsToSharePoint = await getFileTags(doc);
                 dispatch(setInitialTemplate(fieldsToSharePoint));
-                dispatch(setInitFile(file));
+                dispatch(setInitFile({fileName, fileUrl, type}));
                 fieldsToSharePoint = [];
                 ref.current.value = '';
                 setFileOrder(1);

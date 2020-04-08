@@ -5,7 +5,8 @@ import { IFileActions, FileActions } from '../actions/fileActions';
 
 const fileReducer: Reducer<IFileSave, IFileActions> = (state: IFileSave = initialFileState, action) => {
     switch (action.type) {
-        case FileActions.SET_INITIAL_FILE: { return {...state,listId: '', listName:'', file: action.payload.file }; }
+        case FileActions.SET_INITIAL_FILE: { return { ...state, listId: '', listName: '', 
+            file: { fileName: action.payload.file.fileName, fileUrl: action.payload.file.fileUrl, type: action.payload.file.type } }; }
         default: return state;
     }
 };

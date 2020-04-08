@@ -1,5 +1,5 @@
 import { ITemplateField } from './ITemplate';
-import {IDropdownOption} from 'office-ui-fabric-react';
+import { IDropdownOption } from 'office-ui-fabric-react';
 
 export interface IStore {
     readonly loaded: boolean;
@@ -9,8 +9,15 @@ export interface IStore {
     readonly listOpt: IDropdownOption[];
 }
 
-export interface IFileSave{
+export interface IFileSave {
     listName: string;
     listId: string;
-    file:File;
+    file: IDocxFile;
+
+}
+
+export interface IDocxFile { 
+    fileUrl: string; 
+    fileName: string; 
+    type:string;
 }

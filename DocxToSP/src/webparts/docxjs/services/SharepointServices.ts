@@ -94,12 +94,17 @@ export const loadFieldFromList = async (listName:string) => {
 };
 
 export const uploadFile = async ({listName, file, listId}: IFileSave) =>{
+
+    const fileBlob = await  fetch(file.fileUrl).then(r=> r.blob());
+    const fileObj = await new File([fileBlob], file.fileName, {type: file.type});
+
+    console.log(fileObj);
    try{
-    let fileAdd = await sp.web.getFolderByServerRelativeUrl('Templates').files.add(file.name, file);
+    let fileAdd = await sp.web.getFolderByServerRelativeUrl('Templates').files.add(fileObj.name, fileObj);
     let fileData = await fileAdd.file.getItem();
     let updateResult:IItemUpdateResult;
     updateResult = await fileData.update({
-        Title: file.name,
+        Title: fileObj.name,
         ListName: listName,
         ListId: listId
     });
