@@ -6,7 +6,6 @@ import {populateListOptions, setSelectedList, setModal} from '../models/redux/ac
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../models/redux/store';
 
-
 export default function SpToDocx(props:ISpToDocxProps) {
   const dispatch = useDispatch();
   const {allLists,list} = useSelector((store:RootState)=>store.listReducer);
