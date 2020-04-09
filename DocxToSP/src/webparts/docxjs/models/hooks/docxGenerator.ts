@@ -5,7 +5,7 @@ import Docxtemplater from 'docxtemplater';
 let InspectModule = require('docxtemplater/js/inspect-module');
 import { ITemplateField, FieldTypess, ITemplateGen } from '../interfaces/ITemplate';
 import { createList, addFields,uploadFile } from '../../services/SharepointServices';
-import {assertLookFieldValue, LookUpFieldStatus} from '../../utils/utils';
+import {assertLookFieldValue, LookUpFieldStatus, getFieldRef} from '../../utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {setInitialTemplate, resetState} from '../../redux/actions/actions';
 import {setInitFile} from '../../redux/actions/fileActions';
@@ -21,46 +21,53 @@ export function useTemplateGen(): ITemplateGen {
     const [isFirstFile, setFileOrder] = React.useState(0);
     const ref = React.useRef<HTMLInputElement>(undefined);
 
-    function validateFieldType(field: string) {
+    function validateFieldType(field: string, originalFieldName: string) {
         let fieldObj: ITemplateField;
         if (field.startsWith('t')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine, 
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FSingleLine,
+                         originalFieldName, 
                          lookup: { field: null, list: null, allFields: [] },
                          choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('n')) {
-            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric, 
+            fieldObj = { field: field.substring(1), fieldType: FieldTypess.FNumeric,
+                         originalFieldName,  
                          lookup: { field: null, list: null, allFields: [] },
                          choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('$')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FMonetary, 
+                         originalFieldName, 
                          lookup: { field: null, list: null, allFields: [] },
                          choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('c')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FLookUp, 
+                         originalFieldName,          
                          lookup: { field: null, list: null, allFields: [] },
                          choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('e')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FChoice, 
+                         originalFieldName, 
                          lookup: { field: null, list: null, allFields: [] },
                          choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else if (field.startsWith('d')) {
             fieldObj = { field: field.substring(1), fieldType: FieldTypess.FData, 
+                         originalFieldName,          
                          lookup: { field: null, list: null, allFields: [] },
                          choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
         }
         else {
             fieldObj = { field: field, fieldType: FieldTypess.FSingleLine, 
+                         originalFieldName, 
                          lookup: { field: null, list: null, allFields: [] },
                          choice: { choices: [], type: ChoiceFieldType.Dropdown}};
             return fieldObj;
@@ -76,8 +83,8 @@ export function useTemplateGen(): ITemplateGen {
         let uniqueTags = Array.from(new Set([...tags]));
 
         let allTags = uniqueTags.map(field => {
-            field = field.replace('{', '').replace('}', '');
-            return validateFieldType(field);
+           const fieldName = field.replace('{', '').replace('}', '');
+            return validateFieldType(fieldName, field);
         });
         return allTags;
     }
@@ -111,11 +118,13 @@ export function useTemplateGen(): ITemplateGen {
 
         try {
             const canUpload = assertLookFieldValue(templates);
+            const fieldRef = getFieldRef(templates);
+
             if (canUpload === LookUpFieldStatus.NoLookUps) {
                 let listId =  await createList(listName);
-
+                
                 await addFields(listName, templates);
-                let updateRes = await uploadFile({listName, listId, file: fileProp.file});
+                let updateRes = await uploadFile({listName, listId, file: fileProp.file}, fieldRef);
                 console.log(updateRes);
             }
             else if (canUpload === LookUpFieldStatus.NoValues) {
@@ -123,9 +132,9 @@ export function useTemplateGen(): ITemplateGen {
             }
             else if (canUpload === LookUpFieldStatus.HasValues) {
                 let listId =  await createList(listName);
-
+                
                 await addFields(listName, templates);
-                let updateRes = await uploadFile({listName, listId, file:fileProp.file});
+                let updateRes = await uploadFile({listName, listId, file:fileProp.file}, fieldRef);
                 console.log(updateRes);
             }
 

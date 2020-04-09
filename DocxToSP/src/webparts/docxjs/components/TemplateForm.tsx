@@ -16,7 +16,7 @@ export function TemplateForm(): JSX.Element {
                 <label>{t.field}</label>
                 <IconButton iconProps={editIco} onClick={() => populateWitTypeOpt(t.field)} />
                 {TemplateItems(isEdit.edit, isEdit.selectedIdx, 
-                { field: t.field, fieldType: t.fieldType, 
+                { field: t.field, fieldType: t.fieldType, originalFieldName: t.originalFieldName,
                   lookup: { list: t.lookup.list, field: t.lookup.field, allFields: t.lookup.allFields },
                   choice: {choices: t.choice.choices, type: t.choice.type} })}
             </div>

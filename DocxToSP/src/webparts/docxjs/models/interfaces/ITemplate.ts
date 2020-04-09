@@ -2,6 +2,7 @@ import { IDropdownOption } from 'office-ui-fabric-react';
 
 export interface ITemplateField {
    readonly field: string;
+   readonly originalFieldName: string;
    readonly fieldType: FieldTypess; 
    readonly choice?: {choices: string[], type: 0|1|2};
    readonly lookup?: {list: string, field: string, allFields?: IDropdownOption[]};

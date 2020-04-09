@@ -31,6 +31,9 @@ export function splitString(str:string){
     return options;
 }
 
+export const getFieldRef = (temlates: ITemplateField[]) =>  temlates.map(i => `${i.field}|${i.originalFieldName}`).join(';');
+
+
 /**@constant */
 export const choicesFieldOpt: IDropdownOption[] = [
     { key: ChoiceFieldType.Dropdown, text: 'Dropdown' }, 

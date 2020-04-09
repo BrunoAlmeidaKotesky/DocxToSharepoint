@@ -99,7 +99,7 @@ async function urlToFile(file:IDocxFile):Promise<File>{
     return fileObj;
 }
 
-export const uploadFile = async ({listName, file, listId}: IFileSave) =>{
+export const uploadFile = async ({listName, file, listId}: IFileSave, documentFieldRef:string) =>{
 
    const fileObj = await urlToFile(file);
 
@@ -107,12 +107,16 @@ export const uploadFile = async ({listName, file, listId}: IFileSave) =>{
     let fileAdd = await sp.web.getFolderByServerRelativeUrl('Templates').files.add(fileObj.name, fileObj);
     let fileData = await fileAdd.file.getItem();
     let updateResult:IItemUpdateResult;
+
     updateResult = await fileData.update({
         Title: fileObj.name,
         ListName: listName,
-        ListId: listId
+        ListId: listId,
+        documentFieldRef
     });
+
     return updateResult;
    }
     catch(err){console.log(err);}
 };
+ 

@@ -4,7 +4,6 @@ import { useTemplateGen } from '../models/hooks/docxGenerator';
 import {  DefaultButton, } from 'office-ui-fabric-react';
 import {TemplateForm} from './TemplateForm';
 
-
 export default function Docxjs(props: IDocxjsProps): JSX.Element {
     const {sendFields, handleFile, ref,templates } = useTemplateGen();
     const [listName, setListName] = React.useState('');
