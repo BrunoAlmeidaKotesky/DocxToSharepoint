@@ -1,7 +1,6 @@
 import { sp } from "@pnp/sp";
 import {IListFile,IListFilter} from '../models/interfaces/ITemplateList';
 import { IFieldContent } from './../models/interfaces/IUseFieldGen'; 
-import {IList, IListInfo} from '@pnp/sp/lists';
 import "@pnp/sp/webs";
 import "@pnp/sp/files";
 import "@pnp/sp/items";
@@ -26,11 +25,17 @@ async function getTemplateLibrary(){
 
 export async function loadAllLists(){
     const listQuery = await getTemplateLibrary();
-    const lists:IListInfo[]=[];
+    const lists:IListFilter[]=[];
 
     for (const item of listQuery) {
         let list = await sp.web.lists.getById(item.items.ListId).get();
-        lists.push(list);
+        let documentFieldRef = item.items.documentFieldRef;
+        let ListId = list.Id;
+        let ListName = list.Title;
+        let file = item.file;
+        let fileName = item.items.Title;
+
+        lists.push({file, items: {ListId, ListName, Title: fileName, documentFieldRef}});
     }
     return lists;
 }

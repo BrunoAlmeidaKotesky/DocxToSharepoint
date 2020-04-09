@@ -1,5 +1,5 @@
 export interface IListFile{
-    GUID: string;
+    GUID?: string;
     Title: string;
     ListId: string;
     ListName: string;

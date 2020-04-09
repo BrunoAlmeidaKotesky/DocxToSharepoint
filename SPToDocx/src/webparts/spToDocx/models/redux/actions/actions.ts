@@ -1,10 +1,9 @@
+import { IListFilter } from './../../interfaces/ITemplateList';
 import { IFieldContent } from './../../interfaces/IUseFieldGen';
 import { RootState } from './../store';
 import { IDropdownOption } from 'office-ui-fabric-react';
-import { IListInfo } from '@pnp/sp/lists';
 import {loadAllLists, loadFieldsFromList} from '../../../services/SharepointServices';
 import {action} from 'typesafe-actions';
-import {IStore} from '../../interfaces/IStore';
 
 export enum Actions {
     LOAD_LISTS = 'LOAD_LISTS',
@@ -20,11 +19,11 @@ export const clearListFields = () => action(Actions.CLEAR_FIELDS);
 
 const loadLists = (listCombo: IDropdownOption[]) => action(Actions.LOAD_LISTS, {listCombo});
 export function populateListOptions(){
-    let lists: IListInfo[];
-    return async (dispatch, getState?):Promise<IListInfo[]> => {
+    let lists: IListFilter[];
+    return async (dispatch, getState?) => {
          lists = await loadAllLists();
          let listCombo: IDropdownOption[] = [];
-         lists.forEach(l => listCombo.push({ key: l.Id, text: l.Title }));
+         lists.forEach(l => listCombo.push({ key: l.items.ListId, text: l.items.ListName }));
          return dispatch(loadLists(listCombo));
     };
 }
