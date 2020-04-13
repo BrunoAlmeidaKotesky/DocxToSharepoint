@@ -71,6 +71,12 @@ export default function useFieldGen(): IUseFieldGen {
                 return(<><label>{field.Title}</label>
                          <TextField id={field.InternalName}/></>);
             }
+            case FieldTypes.Lookup: {
+                const choices:IDropdownOption[] = [];
+                field.Choices.forEach((text, key) => choices.push({key, text}));
+                return(<><label>{field.Title}</label>
+                         <Dropdown id={field.InternalName} options={choices}/></>);
+            }
         }
     }
 

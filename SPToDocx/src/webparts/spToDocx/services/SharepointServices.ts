@@ -1,3 +1,4 @@
+import { getFieldFormat } from './../utils/constants';
 import { sp } from "@pnp/sp";
 import {IListFile,IListFilter} from '../models/interfaces/ITemplateList';
 import { IFieldContent } from './../models/interfaces/IUseFieldGen'; 
@@ -8,6 +9,7 @@ import "@pnp/sp/items";
 import "@pnp/sp/folders";
 import "@pnp/sp/lists";
 import "@pnp/sp/fields";
+import { FieldTypes } from '@pnp/sp/fields';
 
 async function getTemplateLibrary(){
     const listFilter:IListFilter[]=[];
@@ -41,8 +43,41 @@ export async function loadTemplateLists(){
     return lists;
 }
 
-export const loadFieldsFromList = async (listId:string, documentFieldRef: string) => {
-    let fields = await sp.web.lists.getById(listId).fields.select().filter('FromBaseType eq false').get();
-    let fieldWData = insertFieldWithTemplateData((fields as IFieldContent[]), documentFieldRef);
-    return fieldWData;
+const getLookUpFields = async ({lookUpId, lookupField}) => await sp.web.lists.getById(lookUpId).items.select(lookupField).get();
+
+const insertLookUpChoices = async (fields:IFieldContent[]) => {
+    for(const f of fields) {
+        if(f.FieldTypeKind === FieldTypes.Lookup){
+            let lFiekdId = getFieldFormat(f.SchemaXml, 'List');
+            let lookUpId = lFiekdId.replace('{','').replace('}','');
+            let lookupField = f.LookupField;
+            let lookUpOptions =  await getLookUpFields({lookUpId,lookupField});
+            let choices: string[]=[];
+            lookUpOptions.forEach(it => {
+                delete(it['odata.editLink']);
+                delete(it['odata.etag']);        
+                delete(it['odata.id']);
+                delete(it['odata.type']);
+                let lookUpChoices = Object.entries<string>(it);
+                lookUpChoices.forEach((c:[string, string]) => {
+                    let key = c[0];
+                    let value = c[1];
+                    if(key === lookupField){
+                        choices.push(value);
+                    }
+                });
+            });
+            f.Choices = choices;
+        }
+    }
+    return fields;
 };
+
+export const loadFieldsFromList = async (listId:string, documentFieldRef: string) => {
+    let allBaseFields = await sp.web.lists.getById(listId).fields.select().filter('FromBaseType eq false').get();
+    let fieldWData = insertFieldWithTemplateData((allBaseFields as IFieldContent[]), documentFieldRef);
+    let fields = await insertLookUpChoices(fieldWData);
+
+    return fields;
+};
+

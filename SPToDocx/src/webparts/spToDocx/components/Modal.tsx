@@ -23,7 +23,6 @@ function ListModal(){
           <>{fields.map((it, n) => renderFields(it, n))}        
           </>:<Spinner size={3} label="Carregando campos..."/>}
         </div>
-        <DefaultButton onClick={()=>''}/>
       </Panel>);
 }
 
