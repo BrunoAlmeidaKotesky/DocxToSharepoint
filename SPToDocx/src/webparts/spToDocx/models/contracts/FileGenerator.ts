@@ -6,6 +6,20 @@ let InspectModule = require('docxtemplater/js/inspect-module');
 import PizZip from 'pizzip';
 
 
+
+declare interface IDocxMethods {
+    generate({type, mimeType}: {type: string, mimeType:string}):Blob;
+}
+declare interface IDocxtemplater{
+    setData(obj:object):void;
+    getZip():IDocxMethods;
+    render():any;
+}
+declare class Docxtemplater { 
+    public loadZip(object: object): IDocxtemplater;
+   
+}
+
 export default class FileGenerator {
     protected fileName: string;
     protected urlFile: string;
@@ -68,18 +82,15 @@ export default class FileGenerator {
                     let zip = new PizZip(reader.result);
                     let doc = new Docxtemplater().loadZip(zip);
                     let fileTags = this.getFileTags(doc);
+                    let jObject = {};
                     this.data.forEach(field => {
                         fileTags.forEach(tag => {
                             if(tag === field.fieldRef){
-                                let jString = JSON.stringify({[tag]: field.value});
-                                let jObject = JSON.parse(jString);
-                                
-                                doc.setData({jObject});
+                                jObject[tag] = field.value;
                             }
                         });
                     });
-                   
-                    
+                    doc.setData(jObject);
                     try {
                         doc.render();
                     }
@@ -88,7 +99,7 @@ export default class FileGenerator {
                         this.errorHandler(error);
                     }
         
-                    let out:Blob = doc.getZip().generate({
+                    let out = doc.getZip().generate({
                         type:"blob",
                         mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     }); //Output the document using Data-URI
