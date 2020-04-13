@@ -9,3 +9,13 @@ export interface IListFilter{
     file: File;
     items: IListFile;
 }
+
+export interface IFileGeneration {
+    value: unknown;
+    field: string;
+    fieldRef: string;
+}
+
+export interface IFileStore{
+    fields: IFileGeneration[];
+}

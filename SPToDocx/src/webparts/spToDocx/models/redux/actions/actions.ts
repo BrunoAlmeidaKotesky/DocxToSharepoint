@@ -1,3 +1,4 @@
+import { setInitialFields } from './fileActions';
 import { IListFilter } from './../../interfaces/ITemplateList';
 import { IFieldContent } from './../../interfaces/IUseFieldGen';
 import { FileData } from './../../types/types';
@@ -36,11 +37,11 @@ export function populateListOptions() {
 const setFieldsFromList = (fields: IFieldContent[]) => action(Actions.SET_FIELDS_FROM_LIST, fields);
 
 export function setSelectedFields(listId: string, documentFieldRef: string) {
-    return async (dispatch, getState?: () => RootState): Promise<IFieldContent[]> => {
+    return async (dispatch, getState?: () => RootState) => {
         let fields: IFieldContent[];
         fields = await loadFieldsFromList(listId, documentFieldRef);
-
-        return dispatch(setFieldsFromList(fields));
+         dispatch(setFieldsFromList(fields));
+         dispatch(setInitialFields(fields));
     };
 }
 

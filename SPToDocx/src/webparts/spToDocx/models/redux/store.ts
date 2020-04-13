@@ -1,4 +1,6 @@
+import { IFileStore } from './../interfaces/ITemplateList';
 import { listReducer } from './reducers/listReducer';
+import {fileGenReducer} from './reducers/fileGenReducer';
 import { IStore } from './../interfaces/IStore';
 import { createStore, Store, applyMiddleware, compose, combineReducers } from "redux";
 import reduxImmutableStateInvariant from  'redux-immutable-state-invariant';
@@ -10,10 +12,12 @@ declare global {
     }
   }
 export const initialState:IStore = {list: {listId: null, listName: null, fields: [], file:{fileName: null, urlFile: null}, fileFieldRef: null}, isModalOpened:false, allLists:[]};
+export const initialFileGenState: IFileStore = {fields: []};
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
-    listReducer
+    listReducer,
+    fileGenReducer
    });
 export type RootState = ReturnType<typeof rootReducer>;
 
