@@ -7,10 +7,9 @@ import { FieldTypes } from '@pnp/sp/fields';
 import { setModal, setSelectedFields, clearListFields } from '../redux/actions/actions';
 import { IUseFieldGen, IFieldContent } from '../interfaces/IUseFieldGen';
 import { DayPicker, formatDate, getFieldFormat } from '../../utils/constants';
-import { RInput } from '../types/types';
 
 export default function useFieldGen(): IUseFieldGen {
-    const { isModalOpened, list: { listId, listName } } = useSelector((store: RootState) => store.listReducer);
+    const { isModalOpened, list: { listId, listName,file,  fileFieldRef} } = useSelector((state:RootState) =>state.listReducer);
     const [numberVal, setNumVal] = React.useState<string>('');
     const dispatch = useDispatch();
     const headerText = `Lista: ${listName}`;
@@ -21,7 +20,7 @@ export default function useFieldGen(): IUseFieldGen {
     }
     useEffect(() => {
         if (listId !== null && isModalOpened === true)
-            dispatch(setSelectedFields(listId));
+            dispatch(setSelectedFields(listId, fileFieldRef));
     }, [isModalOpened]);
 
     function renderFields(field: IFieldContent, idx: number): JSX.Element {
@@ -47,29 +46,31 @@ export default function useFieldGen(): IUseFieldGen {
                     const choices: IDropdownOption[] = [];
                     field.Choices.forEach((text, index) => choices.push({ key: index, text: text }));
                     return (<><label>{field.Title}</label>
-                        <Dropdown options={choices} /></>);
+                        <Dropdown  id={field.InternalName} options={choices} /></>);
                 }
                 if(formatType === "RadioButtons"){
                     const groups: IChoiceGroupOption[]=[];
                     field.Choices.forEach((text,index) => groups.push({key: index.toString(), text: text}));
                     return(<><label>{field.Title}</label>
-                             <ChoiceGroup options={groups}/></>);
+                             <ChoiceGroup id={field.InternalName} options={groups}/></>);
                 }
             }
             case FieldTypes.MultiChoice: {
                 const multiChoices: IDropdownOption[] = [];
                 field.Choices.forEach((text, index) => multiChoices.push({ key: index, text: text }));
                 return (<><label>{field.Title}</label>
-                    <Dropdown options={multiChoices} multiSelect /></>);
+                    <Dropdown id={field.InternalName} options={multiChoices} multiSelect /></>);
             }
             case FieldTypes.DateTime:{
                 return (<><label>{field.Title}</label>
-                    <DatePicker isRequired={true} allowTextInput={true} strings={DayPicker}
+                    <DatePicker isRequired={true} allowTextInput={true} strings={DayPicker} id={field.InternalName}
                         formatDate={formatDate} 
                         onSelectDate={(date)=>{console.log(date);}}/></>);
             }
-                
-
+            case FieldTypes.Currency: {
+                return(<><label>{field.Title}</label>
+                         <TextField id={field.InternalName}/></>);
+            }
         }
     }
 

@@ -22,7 +22,7 @@ export default function SpToDocx(props:ISpToDocxProps) {
                      disabled={(list.listName !== null && list.listId !==null) ? false: true}/>
       <Dropdown options={allLists} 
                 defaultSelectedKey={list.listId} 
-                onChanged={opt => dispatch(setSelectedList((opt.key as string), opt.text))}/>
+                onChanged={opt => dispatch(setSelectedList((opt.key as string), opt.text, opt.data))}/>
       <ListModal/>
     </div>
   );

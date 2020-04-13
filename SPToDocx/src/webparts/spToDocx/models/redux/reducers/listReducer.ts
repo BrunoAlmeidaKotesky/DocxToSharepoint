@@ -11,13 +11,22 @@ export const listReducer = (state: IStore = initialState, action: ListActions) =
       return { ...state, allLists: action.payload.listCombo };
     }
     case Actions.SET_SELECTED_LIST: {
-      return { ...state, list: { listId: action.payload.listId, listName: action.payload.listName, fields: state.list.fields } };
+      const listId = action.payload.listId;
+      const listName = action.payload.listName;
+      const fields = state.list.fields;
+      const urlFile = action.payload.data.file.urlFile;
+      const fileName = action.payload.data.file.fileName;
+      const fileFieldRef = action.payload.data.fieldData;
+
+      return { ...state, list: { listId, listName, fields, file: {urlFile, fileName}, fileFieldRef }};
     }
     case Actions.SET_FIELDS_FROM_LIST: {
-      return{...state, list: { listId: state.list.listId, listName: state.list.listName, fields: action.payload}};
+      return{...state, list: { listId: state.list.listId, listName: state.list.listName, fields: action.payload, 
+                        file: {urlFile: state.list.file.urlFile, fileName: state.list.file.fileName}, fileFieldRef: state.list.fileFieldRef}};
     }
     case Actions.CLEAR_FIELDS:{
-      return{...state, list:{ listId: state.list.listId, listName: state.list.listName, fields: []}};
+      return{...state, list:{ listId: state.list.listId, listName: state.list.listName, fields: [],
+                       file: {urlFile: state.list.file.urlFile, fileName: state.list.file.fileName}, fileFieldRef: state.list.fileFieldRef}};
     }
 
     default: return state;
