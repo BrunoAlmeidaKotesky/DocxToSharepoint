@@ -5,21 +5,6 @@ import Docxtemplater from 'docxtemplater';
 let InspectModule = require('docxtemplater/js/inspect-module');
 import PizZip from 'pizzip';
 
-
-
-declare interface IDocxMethods {
-    generate({type, mimeType}: {type: string, mimeType:string}):Blob;
-}
-declare interface IDocxtemplater{
-    setData(obj:object):void;
-    getZip():IDocxMethods;
-    render():any;
-}
-declare class Docxtemplater { 
-    public loadZip(object: object): IDocxtemplater;
-   
-}
-
 export default class FileGenerator {
     protected fileName: string;
     protected urlFile: string;
@@ -48,7 +33,7 @@ export default class FileGenerator {
         console.log(JSON.stringify({ error: error }, this.replaceErrors));
 
         if (error.properties && error.properties.errors instanceof Array) {
-            const errorMessages = error.properties.errors.map((err) => {
+            const errorMessages = error.properties.errors.map(err => {
                 return error.properties.explanation;
             }).join("\n");
             console.log('errorMessages', errorMessages);
@@ -81,6 +66,7 @@ export default class FileGenerator {
                 reader.onload = async () => {
                     let zip = new PizZip(reader.result);
                     let doc = new Docxtemplater().loadZip(zip);
+                    doc.setOptions({nullGetter: ()=> ""});
                     let fileTags = this.getFileTags(doc);
                     let jObject = {};
                     this.data.forEach(field => {

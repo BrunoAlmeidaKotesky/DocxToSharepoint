@@ -9,11 +9,13 @@ import {setFieldValue, setInitialFields, clearFieldsVal} from '../redux/actions/
 import { IUseFieldGen, IFieldContent } from '../interfaces/IUseFieldGen';
 import { DayPicker, formatDate, getFieldFormat } from '../../utils/constants';
 import { RInput } from '../types/types';
+import { IFileGeneration } from '../interfaces/ITemplateList';
 
 export default function useFieldGen(): IUseFieldGen {
     const { isModalOpened, list: { listId, listName,file,  fileFieldRef, fields} } = useSelector((state:RootState) =>state.listReducer);
     const [numberVal, setNumVal] = React.useState<string>('');
     const dispatch = useDispatch();
+    const setValue = ({value, fieldRef, field}: IFileGeneration) => dispatch(setFieldValue({field, fieldRef, value}));
     const headerText = `Lista: ${listName}`;
 
     function dismisModal() {
@@ -31,10 +33,11 @@ export default function useFieldGen(): IUseFieldGen {
 
         const setBoolValue = (check:boolean) => {
                 if (check === true)
-                      dispatch(setFieldValue({field: field.Title, fieldRef: field.documentFieldRef, value: 'Sim'}));
-                else  dispatch(setFieldValue({field: field.Title, fieldRef: field.documentFieldRef, value: 'Não'}));
+                setValue({field: field.Title, fieldRef: field.documentFieldRef, value: 'Sim'});
+                else  setValue({field: field.Title, fieldRef: field.documentFieldRef, value: 'Não'});
         };
-        const setTextFieldValue = (e) => dispatch(setFieldValue({field: field.Title, value: e.target.value, fieldRef: field.documentFieldRef}));
+        const setTextFieldValue = (e) => setValue({field: field.Title, value: e.target.value, fieldRef: field.documentFieldRef});
+        const setDropDownValue = (opt) => setValue({field: field.Title, fieldRef: field.documentFieldRef, value: opt.text});
 
         switch (field.FieldTypeKind) {
             case FieldTypes.Boolean:
@@ -56,26 +59,26 @@ export default function useFieldGen(): IUseFieldGen {
                     const choices: IDropdownOption[] = [];
                     field.Choices.forEach((text, index) => choices.push({ key: index, text: text }));
                     return (<><label>{field.Title}</label>
-                        <Dropdown  id={field.InternalName} options={choices} /></>);
+                        <Dropdown  id={field.InternalName} onChanged={setDropDownValue} options={choices} /></>);
                 }
                 if(formatType === "RadioButtons"){
                     const groups: IChoiceGroupOption[]=[];
                     field.Choices.forEach((text,index) => groups.push({key: index.toString(), text: text}));
                     return(<><label>{field.Title}</label>
-                             <ChoiceGroup id={field.InternalName} options={groups}/></>);
+                             <ChoiceGroup id={field.InternalName} onChanged={setDropDownValue} options={groups}/></>);
                 }
             }
             case FieldTypes.MultiChoice: {
                 const multiChoices: IDropdownOption[] = [];
                 field.Choices.forEach((text, index) => multiChoices.push({ key: index, text: text }));
                 return (<><label>{field.Title}</label>
-                    <Dropdown id={field.InternalName} options={multiChoices} multiSelect /></>);
+                    <Dropdown id={field.InternalName} onChanged={setDropDownValue} options={multiChoices} multiSelect /></>);
             }
             case FieldTypes.DateTime:{
                 return (<><label>{field.Title}</label>
                     <DatePicker isRequired={false} allowTextInput={true} strings={DayPicker} id={field.InternalName}
                         formatDate={formatDate} 
-                        onSelectDate={(date)=>{console.log(date);}}/></>);
+                        onSelectDate={(date)=> setValue({field: field.Title, value: formatDate(date), fieldRef: field.documentFieldRef})}/></>);
             }
             case FieldTypes.Currency: {
                 return(<><label>{field.Title}</label>
@@ -85,7 +88,7 @@ export default function useFieldGen(): IUseFieldGen {
                 const choices:IDropdownOption[] = [];
                 field.Choices.forEach((text, key) => choices.push({key, text}));
                 return(<><label>{field.Title}</label>
-                         <Dropdown id={field.InternalName} options={choices}/></>);
+                         <Dropdown id={field.InternalName} onChanged={setDropDownValue} options={choices}/></>);
             }
         }
     }

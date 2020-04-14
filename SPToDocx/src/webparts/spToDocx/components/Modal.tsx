@@ -24,7 +24,7 @@ function ListModal(){
           {fields.length > 0 ? 
           <>{fields.map((it, n) => renderFields(it, n))}        
           </>:<Spinner size={3} label="Carregando campos..."/>}
-          <DefaultButton onClick={async () => new FileGenerator({fileName, urlFile}, fieldsWithValues).generateFile()}/>
+          <DefaultButton text="Gerar arquivo" onClick={async () => new FileGenerator({fileName, urlFile}, fieldsWithValues).generateFile()}/>
         </div>
       </Panel>);
 }
