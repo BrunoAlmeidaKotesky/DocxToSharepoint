@@ -1,21 +1,23 @@
-import { IFileGeneration } from './../interfaces/ITemplateList';
+import { IFileGeneration, IFileGenerator } from './../interfaces/ITemplateList';
 import { FileData } from './../types/types';
 import { saveAs } from 'file-saver';
 import Docxtemplater from 'docxtemplater';
 let InspectModule = require('docxtemplater/js/inspect-module');
 import PizZip from 'pizzip';
 
+
 export default class FileGenerator {
     protected fileName: string;
     protected urlFile: string;
     protected data: IFileGeneration[];
+    protected newFileName: string;
     protected iModule;
 
-    constructor({fileName, urlFile}:FileData , data:IFileGeneration[]) {
+    constructor({fileName, urlFile, data, newFileName}:IFileGenerator) {
         this.fileName = fileName;
         this.urlFile = urlFile;
         this.data = data;
-
+        this.newFileName = newFileName;
         this.iModule = InspectModule();
     }
     
@@ -89,7 +91,12 @@ export default class FileGenerator {
                         type:"blob",
                         mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     }); //Output the document using Data-URI
-                    saveAs(out, 'teste.docx');
+                    if(this.newFileName.endsWith('.docx'))
+                        saveAs(out, this.newFileName);
+                    else {
+                        const newFile =  this.newFileName + ".docx";
+                        saveAs(out, newFile);
+                    }
             };
          reader.readAsBinaryString(file);
             
