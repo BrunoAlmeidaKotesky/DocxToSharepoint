@@ -91,7 +91,6 @@ export function useTemplateGen(): ITemplateGen {
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file: File = (<HTMLInputElement>e.target).files[0];
-        console.log(file);
         const fileName = file.name;
         const type = file.type;
         const fileUrl = URL.createObjectURL(file);
@@ -125,7 +124,6 @@ export function useTemplateGen(): ITemplateGen {
                 
                 await addFields(listName, templates);
                 let updateRes = await uploadFile({listName, listId, file: fileProp.file}, fieldRef);
-                console.log(updateRes);
             }
             else if (canUpload === LookUpFieldStatus.NoValues) {
                 console.log('Não pode fazer upload porque tem lookup sem valores');
@@ -135,7 +133,6 @@ export function useTemplateGen(): ITemplateGen {
                 
                 await addFields(listName, templates);
                 let updateRes = await uploadFile({listName, listId, file:fileProp.file}, fieldRef);
-                console.log(updateRes);
             }
 
         } catch (e) {

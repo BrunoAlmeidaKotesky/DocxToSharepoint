@@ -44,8 +44,10 @@ export const useTemplateHandle = (): ITemplateForm => {
                     if (idx === fields.field) {
                     return (<>
                         <Dropdown key={fields.field} id={fields.field} options={choicesFieldOpt} 
-                                  onChanged={(opt) =>dispatch(changeChoiceType({fieldIdx: fields.field, type: (opt.key as ChoiceFieldType)}))}/>
-                        <TextField onChange={(e) => handleChoiceOptChange(e,fields.field)}/>
+                                  onChanged={(opt) =>dispatch(changeChoiceType({fieldIdx: fields.field, type: (opt.key as ChoiceFieldType)}))}
+                                  defaultSelectedKey={fields.choice?.type !== undefined && fields.choice.type}/>
+                        <TextField onChange={(e) => handleChoiceOptChange(e,fields.field)}
+                                   defaultValue={fields.choice?.choices.length > 0 ? fields.choice.choices.toString(): ''}/>
                     </>);
                     }
                 }
@@ -71,8 +73,10 @@ export const useTemplateHandle = (): ITemplateForm => {
                     if (idx === fields.field) {
                         return (<>
                             <Dropdown key={fields.field} id={fields.field} options={choicesFieldOpt} 
-                                      onChanged={(opt) =>dispatch(changeChoiceType({fieldIdx: fields.field, type: (opt.key as ChoiceFieldType)}))}/>
-                            <TextField onChange={(e) => handleChoiceOptChange(e,fields.field)}/>
+                                      onChanged={(opt) =>dispatch(changeChoiceType({fieldIdx: fields.field, type: (opt.key as ChoiceFieldType)}))}
+                                      defaultSelectedKey={fields.choice?.type !== undefined && fields.choice.type}/>
+                            <TextField onChange={(e) => handleChoiceOptChange(e,fields.field)} 
+                                       defaultValue={fields.choice?.choices.length > 0 ? fields.choice.choices.toString(): ''}/>
                         </>);
                         }
                 }
