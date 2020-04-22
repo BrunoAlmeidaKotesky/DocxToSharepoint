@@ -1,21 +1,21 @@
 ## docx-js
 
-This is where you include your WebPart documentation.
+Falta uma documentação aqui.
 
-### Building the code
+### Exemplo de funcionalidade:
+####Lê um documento base de template e cria uma lista baseado nos campos:####
 
-```bash
-git clone the repo
-npm i
-npm i -g gulp
-gulp
-```
+![a](https://github.com/brunokook/DocxToSharepoint/blob/master/MicrosoftTeams-image%20(4).png)
 
-This package produces the following:
 
-* lib/* - intermediate-stage commonjs build artifacts
-* dist/* - the bundled script, along with other resources
-* deploy/* - all resources which should be uploaded to a CDN.
+####Arquivo armazenado:####
+
+![a](https://github.com/brunokook/DocxToSharepoint/blob/master/MicrosoftTeams-image%20(5).png)
+
+
+####Novo arquivo gerado baseado na lista:####
+
+![a](https://github.com/brunokook/DocxToSharepoint/blob/master/MicrosoftTeams-image%20(6).png)
 
 ### Build options
 
