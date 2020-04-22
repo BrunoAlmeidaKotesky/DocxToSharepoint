@@ -1,6 +1,7 @@
 import { ChoiceFieldType } from './../models/interfaces/ITemplate';
 import { IDropdownOption } from 'office-ui-fabric-react';
 import { ITemplateField, FieldTypess } from '../models/interfaces/ITemplate';
+import {utils} from 'xlsx';
 export enum LookUpFieldStatus {
     NoLookUps,
     NoValues,
@@ -33,7 +34,11 @@ export function splitString(str:string){
 
 export const getFieldRef = (temlates: ITemplateField[]) =>  temlates.map(i => `${i.field}|${i.originalFieldName}`).join(';');
 
-
+export const make_cols = refstr => {
+	let o = [], C = utils.decode_range(refstr).e.c + 1;
+	for(var i = 0; i < C; ++i) o[i] = {name: utils.encode_col(i), key:i};
+	return o;
+};
 /**@constant */
 export const choicesFieldOpt: IDropdownOption[] = [
     { key: ChoiceFieldType.Dropdown, text: 'Dropdown' }, 

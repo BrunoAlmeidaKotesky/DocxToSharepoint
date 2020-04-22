@@ -6,3 +6,10 @@ export type RNodes = { children: React.ReactNode };
 export type RInput = React.FormEvent<HTMLInputElement | HTMLTextAreaElement>;
 export type PopulateFieldTypes = {idx: string, isEditing?: boolean, option?: IDropdownOption[]};
 export type ChangeType = {idx: string, type:FieldTypess};
+
+export enum FileTypes{
+    XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    CSV = "application/vnd.ms-excel",
+    JSON = "application/json"
+}

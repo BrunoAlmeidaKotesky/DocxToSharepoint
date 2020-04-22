@@ -40,7 +40,8 @@
     "redux-toolkit": "^1.1.2",
     "reflect-metadata": "^0.1.13",
     "ts-jest": "^25.2.1",
-    "typesafe-actions": "^5.1.0"
+    "typesafe-actions": "^5.1.0",
+    "xlsx": "^0.15.6"
   },
   "resolutions": {
     "@types/react": "16.7.22"

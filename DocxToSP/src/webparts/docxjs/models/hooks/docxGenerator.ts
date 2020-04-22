@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setInitialTemplate, resetState} from '../../redux/actions/actions';
 import {setInitFile} from '../../redux/actions/fileActions';
 import { ChoiceFieldType } from './../interfaces/ITemplate';
+import { FileTypes } from '../types/types';
 
 let iModule = InspectModule();
 
@@ -94,17 +95,42 @@ export function useTemplateGen(): ITemplateGen {
         const fileName = file.name;
         const type = file.type;
         const fileUrl = URL.createObjectURL(file);
-
+        let fieldsToSharePoint:ITemplateField[] = [];
         const reader = new FileReader();
-        
-        reader.onload = async () => {
-            if(isFirstFile === 1){
+        const rABS = !!reader.readAsBinaryString;
+
+        reader.onload = async (ev: ProgressEvent<FileReader>) => {
+            if(isFirstFile === 1)
                 dispatch(resetState());
-            }
+            
+            if(type === FileTypes.DOCX){
                 let zip = new PizZip(reader.result);
                 let doc = new Docxtemplater().loadZip(zip);
-                let fieldsToSharePoint = await getFileTags(doc);
+                 fieldsToSharePoint = await getFileTags(doc);
                 dispatch(setInitialTemplate(fieldsToSharePoint));
+            }
+            if(type === FileTypes.XLSX){
+                const XLSX = await import('xlsx');
+                console.log(e);
+                let wb = XLSX.read(ev.target.result, {
+                    type: rABS ? 'binary' : 'array',
+                    bookVBA: true,
+                    cellDates: true,
+                    cellFormula: true,
+                    cellHTML: true,
+                    cellStyles: true
+                });
+
+                const wsName = wb.SheetNames[0];
+                const actualWS = wb.Sheets[wsName];
+                let sheetData = XLSX.utils.sheet_to_json(actualWS, {blankrows: false, dateNF: 'dd/MM/yyyy', defval: '', range: 1});
+                let sheetColumns = Object.keys(sheetData[0]);
+                 fieldsToSharePoint = sheetColumns.map(field => {
+                     return validateFieldType(field, field);
+                 });
+
+                 dispatch(setInitialTemplate(fieldsToSharePoint));
+            }
                 dispatch(setInitFile({fileName, fileUrl, type}));
                 fieldsToSharePoint = [];
                 ref.current.value = '';
