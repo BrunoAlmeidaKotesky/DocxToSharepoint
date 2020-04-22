@@ -1,5 +1,5 @@
 import { IFileGeneration, IFileGenerator } from './../interfaces/ITemplateList';
-import { FileData } from './../types/types';
+import { FileData, FileTypes } from './../types/types';
 import { saveAs } from 'file-saver';
 import Docxtemplater from 'docxtemplater';
 let InspectModule = require('docxtemplater/js/inspect-module');
@@ -9,14 +9,16 @@ import PizZip from 'pizzip';
 export default class FileGenerator {
     protected fileName: string;
     protected urlFile: string;
+    protected fileType: string;
     protected data: IFileGeneration[];
     protected newFileName: string;
     protected iModule;
 
-    constructor({fileName, urlFile, data, newFileName}:IFileGenerator) {
+    constructor({fileName, urlFile, data, newFileName, fileType}:IFileGenerator) {
         this.fileName = fileName;
         this.urlFile = urlFile;
         this.data = data;
+        this.fileType = fileType;
         this.newFileName = newFileName;
         this.iModule = InspectModule();
     }
@@ -47,7 +49,7 @@ export default class FileGenerator {
 
     private async urlToFile(file:FileData):Promise<File>{
         const fileBlob = await fetch(file.urlFile).then(r=> r.blob());
-        const fileObj = await new File([fileBlob], file.fileName, {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+        const fileObj = await new File([fileBlob], file.fileName, {type: file.fileType});
         return fileObj;
     }
 
@@ -63,39 +65,41 @@ export default class FileGenerator {
 
     public async generateFile() {
         try {
-            const file = await this.urlToFile({fileName: this.fileName, urlFile: this.urlFile});
+            const file = await this.urlToFile({fileName: this.fileName, urlFile: this.urlFile,fileType: this.fileType});
             const reader = new FileReader();
                 reader.onload = async () => {
-                    let zip = new PizZip(reader.result);
-                    let doc = new Docxtemplater().loadZip(zip);
-                    doc.setOptions({nullGetter: ()=> ""});
-                    let fileTags = this.getFileTags(doc);
-                    let jObject = {};
-                    this.data.forEach(field => {
-                        fileTags.forEach(tag => {
-                            if(tag === field.fieldRef){
-                                jObject[tag] = field.value;
-                            }
+                    if(file.type === FileTypes.DOCX){
+                        let zip = new PizZip(reader.result);
+                        let doc = new Docxtemplater().loadZip(zip);
+                        doc.setOptions({nullGetter: ()=> ""});
+                        let fileTags = this.getFileTags(doc);
+                        let jObject = {};
+                        this.data.forEach(field => {
+                            fileTags.forEach(tag => {
+                                if(tag === field.fieldRef){
+                                    jObject[tag] = field.value;
+                                }
+                            });
                         });
-                    });
-                    doc.setData(jObject);
-                    try {
-                        doc.render();
-                    }
-                    catch (error) {
-                        // Catch rendering errors (errors relating to the rendering of the template : angularParser throws an error)
-                        this.errorHandler(error);
-                    }
-        
-                    let out = doc.getZip().generate({
-                        type:"blob",
-                        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    }); //Output the document using Data-URI
-                    if(this.newFileName.endsWith('.docx'))
-                        saveAs(out, this.newFileName);
-                    else {
-                        const newFile =  this.newFileName + ".docx";
-                        saveAs(out, newFile);
+                        doc.setData(jObject);
+                        try {
+                            doc.render();
+                        }
+                        catch (error) {
+                            // Catch rendering errors (errors relating to the rendering of the template : angularParser throws an error)
+                            this.errorHandler(error);
+                        }
+            
+                        let out = doc.getZip().generate({
+                            type:"blob",
+                            mimeType: FileTypes.DOCX,
+                        }); //Output the document using Data-URI
+                        if(this.newFileName.endsWith('.docx'))
+                            saveAs(out, this.newFileName);
+                        else {
+                            const newFile =  this.newFileName + ".docx";
+                            saveAs(out, newFile);
+                        }
                     }
             };
          reader.readAsBinaryString(file);

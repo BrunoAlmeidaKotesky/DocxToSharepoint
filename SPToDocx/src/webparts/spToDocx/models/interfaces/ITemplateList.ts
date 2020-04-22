@@ -5,6 +5,7 @@ export interface IListFile{
     ListId: string;
     ListName: string;
     documentFieldRef: string;
+    fileType:string;
 }
 export interface IListFilter{
     file: File;

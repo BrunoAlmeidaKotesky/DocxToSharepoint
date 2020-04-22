@@ -8,7 +8,6 @@ import { setModal, setSelectedFields, clearListFields } from '../redux/actions/a
 import {setFieldValue, setInitialFields, clearFieldsVal} from '../redux/actions/fileActions';
 import { IUseFieldGen, IFieldContent } from '../interfaces/IUseFieldGen';
 import { DayPicker, formatDate, getFieldFormat } from '../../utils/constants';
-import { RInput } from '../types/types';
 import { IFileGeneration } from '../interfaces/ITemplateList';
 
 export default function useFieldGen(): IUseFieldGen {
@@ -29,8 +28,6 @@ export default function useFieldGen(): IUseFieldGen {
     }, [isModalOpened]);
 
     function renderFields(field: IFieldContent, idx: number): JSX.Element {
-        console.log(field);
-
         const setBoolValue = (check:boolean) => {
                 if (check === true)
                 setValue({field: field.Title, fieldRef: field.documentFieldRef, value: 'Sim'});

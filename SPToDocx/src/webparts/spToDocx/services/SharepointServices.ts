@@ -16,12 +16,11 @@ async function getTemplateLibrary(){
     const templates = await sp.web.getFolderByServerRelativeUrl('Templates').files.get();
     for (const tempItem of templates) {
         let _ServerRelativeUrl = tempItem.ServerRelativeUrl;
-        let {GUID, ListId, ListName, Title, documentFieldRef} = await sp.web.getFolderByServerRelativeUrl(_ServerRelativeUrl).getItem<IListFile>();
+        let {GUID, ListId, ListName, Title, documentFieldRef, fileType} = await sp.web.getFolderByServerRelativeUrl(_ServerRelativeUrl).getItem<IListFile>();
         let fileBlob = await sp.web.getFileByServerRelativeUrl(_ServerRelativeUrl).getBlob();
-        let file = new File([fileBlob], Title);
+        let file = new File([fileBlob], Title, {type: fileType});
 
-        listFilter.push({file, items: {GUID, ListId, ListName, Title, documentFieldRef}});
-         console.log(fileBlob, file);
+        listFilter.push({file, items: {GUID, ListId, ListName, Title, documentFieldRef, fileType}});
     }
     return listFilter;
 }
@@ -38,7 +37,7 @@ export async function loadTemplateLists(){
         let file = item.file;
         let fileName = item.items.Title;
 
-        lists.push({file, items: {ListId, ListName, Title: fileName, documentFieldRef}});
+        lists.push({file, items: {ListId, ListName, Title: fileName, documentFieldRef,fileType: file.type}});
     }
     return lists;
 }

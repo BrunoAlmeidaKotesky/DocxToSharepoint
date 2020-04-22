@@ -102,7 +102,7 @@ export const uploadFile = async ({listName, file, listId}: IFileSave, documentFi
    const fileObj = await urlToFile(file);
 
    try{
-    let fileAdd = await sp.web.getFolderByServerRelativeUrl('Templates').files.add(fileObj.name, fileObj);
+    let fileAdd = await sp.web.getFolderByServerRelativeUrl('Templates').files.add(fileObj.name, fileObj, false);
     let fileData = await fileAdd.file.getItem();
     let updateResult:IItemUpdateResult;
 
@@ -110,6 +110,7 @@ export const uploadFile = async ({listName, file, listId}: IFileSave, documentFi
         Title: fileObj.name,
         ListName: listName,
         ListId: listId,
+        fileType: fileObj.type,
         documentFieldRef
     });
 

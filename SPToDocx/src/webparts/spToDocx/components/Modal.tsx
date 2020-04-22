@@ -6,13 +6,13 @@ import useFieldsGen from '../models/hooks/useFieldGenerator';
 import FileGenerator from '../models/contracts/FileGenerator';
 
 function ListModal() {
-  const { isModalOpened, list: { fields, file: { fileName, urlFile } } } = useSelector((store: RootState) => store.listReducer);
+  const { isModalOpened, list: { fields, file: { fileName, urlFile, fileType } } } = useSelector((store: RootState) => store.listReducer);
   const fieldsWithValues = useSelector((fileStore: RootState) => fileStore.fileGenReducer.fields);
   const { dismisModal, headerText, renderFields } = useFieldsGen();
   const [newFileName, setFileName] = React.useState<string>('');
   const saveFile = async () => {
     if (newFileName !== '' && newFileName !== null)
-      new FileGenerator({ fileName, urlFile , data: fieldsWithValues, newFileName}).generateFile();
+      new FileGenerator({ fileName, urlFile , data: fieldsWithValues, newFileName, fileType}).generateFile();
     else return;
   };
 

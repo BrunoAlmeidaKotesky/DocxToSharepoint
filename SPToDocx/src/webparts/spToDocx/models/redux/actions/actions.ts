@@ -16,7 +16,7 @@ export enum Actions {
 }
 
 export const setModal = (isOpened: boolean) => action(Actions.SET_MODAL, isOpened);
-export const setSelectedList = (listId: string, listName: string, data: {file: FileData, fieldData: string}) => action(Actions.SET_SELECTED_LIST, { listId, listName, data });
+export const setSelectedList = (listId: string, listName: string, data: {file: FileData, fieldData: string, fileType: string}) => action(Actions.SET_SELECTED_LIST, { listId, listName, data });
 export const clearListFields = () => action(Actions.CLEAR_FIELDS);
 
 const loadLists = (listCombo: IDropdownOption[]) => action(Actions.LOAD_LISTS, { listCombo });
@@ -28,7 +28,8 @@ export function populateListOptions() {
         lists.forEach(l => {
             const file = URL.createObjectURL(l.file);
             listCombo.push({ key: l.items.ListId, text: l.items.ListName, 
-                            data: { file: { urlFile: file, fileName: l.items.Title }, fieldData: l.items.documentFieldRef } });
+                            data: { file: { urlFile: file, fileName: l.items.Title, fileType: l.items.fileType }, 
+                            fieldData: l.items.documentFieldRef } });
         });
         return dispatch(loadLists(listCombo));
     };

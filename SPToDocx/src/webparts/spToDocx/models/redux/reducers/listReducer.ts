@@ -17,16 +17,17 @@ export const listReducer = (state: IStore = initialState, action: ListActions) =
       const urlFile = action.payload.data.file.urlFile;
       const fileName = action.payload.data.file.fileName;
       const fileFieldRef = action.payload.data.fieldData;
+      const fileType = action.payload.data.file.fileType;
 
-      return { ...state, list: { listId, listName, fields, file: {urlFile, fileName}, fileFieldRef }};
+      return { ...state, list: { listId, listName, fields, file: {urlFile, fileName, fileType}, fileFieldRef }};
     }
     case Actions.SET_FIELDS_FROM_LIST: {
       return{...state, list: { listId: state.list.listId, listName: state.list.listName, fields: action.payload, 
-                        file: {urlFile: state.list.file.urlFile, fileName: state.list.file.fileName}, fileFieldRef: state.list.fileFieldRef}};
+                        file: {urlFile: state.list.file.urlFile, fileName: state.list.file.fileName, fileType: state.list.file.fileType}, fileFieldRef: state.list.fileFieldRef}};
     }
     case Actions.CLEAR_FIELDS:{
       return{...state, list:{ listId: state.list.listId, listName: state.list.listName, fields: [],
-                       file: {urlFile: state.list.file.urlFile, fileName: state.list.file.fileName}, fileFieldRef: state.list.fileFieldRef}};
+                       file: {urlFile: state.list.file.urlFile, fileName: state.list.file.fileName, fileType: state.list.file.fileType}, fileFieldRef: state.list.fileFieldRef}};
     }
 
     default: return state;
